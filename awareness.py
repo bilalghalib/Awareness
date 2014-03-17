@@ -49,6 +49,7 @@ for member in peopleWhoCare['users']:
 	messageToMember = messageToMember + """ " """ + textOut[0:42] + """ " """
 	print messageToMember[0:139]
 	twitter.update_status(status=messageToMember[0:139])
+	sleep(0.1)	
 	tweetsChecked[idOut] = (nameOut, tweetPerson)
 	print tweetPerson
 
@@ -59,9 +60,7 @@ for member in peopleWhoCare['users']:
 ##tweetsChecked[tweet ID][0] = RT person from the admin list
 #tweetsChecked[tweet ID][1] = original twitter handle 
 
-sleep(0.1) #trying not to be rate limited, is this a good idea?
-
- #send the message to the admin that requests them to RT a valid event
+#send the message to the admin that requests them to RT a valid event
 
 ### the code below doesn't work, I'll explain what I was trying to do: ###
 #my goal was to go through all the 
