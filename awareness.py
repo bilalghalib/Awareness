@@ -21,8 +21,8 @@ tweetsChecked = pickle.load( open( "tweetsChecked.p", "rb" ) )
 #example: {439741328134799360: (u'MaraimMasoud', u'zuhair47'), 440800798893957120: (u'SarzRepublic', u'MuhammadAryanpo'), 440148331113631744: (u'bilalghalib', u'DouglasPClement')}
 
 results = twitter.search(q='iraq car bomb')
-pickRandomTweet = random.randint(0,totalStatuses)
 totalStatuses=len(results['statuses'])
+pickRandomTweet = random.randint(0,totalStatuses)
 # grabs a twitter search that I think will give us potential events. For some reason complex searches like: 
 # car%20bomb%20near%3A"baghdad"%20within%3A15mi
 # should work, it says so in the twitter API, help?
@@ -71,7 +71,7 @@ numPotentialRetweets = len(tweetsChecked)
 for x in range(0,numPotentialRetweets):
 	currentTweetId = tweetsChecked.items()[x][0]
 	currentTweetUser = tweetsChecked.items()[x][1][0]
-	#curRT = twitter.get_retweets(id=439681336559685632)
+	curRT = twitter.get_retweets(id=currentTweetId)
 	sleep(0.1)
 	print currentTweetId
 	print currentTweetUser
@@ -81,8 +81,8 @@ for x in range(0,numPotentialRetweets):
 		if curRT[y]['user']['screen_name'] == tweetsChecked.get(currentTweetId)[0]:
 			print "I believe in miricles!"
 			URLOut2 = "https://twitter.com/%s/status/%s/" % (currentTweetUser, currentTweetId) 
-			messageToMember2 ="@" + currentTweetUser + " has verified this attack: " + URLOut2
+			messageToMember2 =".@" + currentTweetUser + " has verified this attack: " + URLOut2
 			print messageToMember2[0:139]
-			#twitter.update_status(status=messageToMember[0:139])
+			twitter.update_status(status=messageToMember2[0:139])
 
 pickle.dump(tweetsChecked, open( "tweetsChecked.p", "wb" ) )
