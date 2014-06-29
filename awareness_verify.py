@@ -14,7 +14,7 @@ def getAlertedTweets():
 	numentries = cur.execute("SELECT Tweetid FROM Alerts;")
 	count = 0
 	while count < numentries:
-		alertids.append(cur.fetchone())
+		alertids.append(cur.fetchone()[0])
 		count += 1
 	return alertids
 
@@ -42,7 +42,9 @@ for p in peopleWhoCare['users']:
 		except KeyError:
 			print "Not a retweet"
 	for r in retweets:
-		if long(r['rewteeted_status']['id']) in alertedtweets:
+		if long(r['retweeted_status']['id']) in alertedtweets:
 			try:
-				#cur.execute()
-				print "INSERT INTO Verifications (OPScreenname, TweetText, Tweetid, VerifierScreenName, VerifyingTweetID) VALUES ('%s', '%s', %s, '%s', %s);" % (r['retweeted_status']['user']['screen_name'], r['retweeted_status']['text'], r['retweeted_status']['id'], r['user']['screen_name'], r['id'])
+				cur.execute("INSERT INTO Verifications (OPScreenname, TweetText, Tweetid, VerifierScreenName, VerifyingTweetID) VALUES ('%s', '%s', %s, '%s', %s);" % (r['retweeted_status']['user']['screen_name'], r['retweeted_status']['text'], r['retweeted_status']['id'], r['user']['screen_name'], r['id']))
+				conn.commit()
+			except mdb.Error, e:
+				print 'Something went wrong. Probably a primary key violation, which is Okey dokey!'
