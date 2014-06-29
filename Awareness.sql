@@ -5,4 +5,6 @@ CREATE DATABASE awareness;
 CREATE USER 'awareness'@'localhost' IDENTIFIED BY  'changeme';
 GRANT ALL ON awareness.* TO 'awareness'@'localhost';
 
-CREATE TABLE awareness.TweetsVerified (Userid int,  TweetText varchar(500), Tweetid bigint, URL varchar(1000));
+CREATE TABLE awareness.Verifications (OPScreenName varchar(100),  TweetText varchar(500), Tweetid bigint, URL varchar(1000), VerifierScreenName varchar(100), VerifyingTweetID bigint, PRIMARY KEY (Tweetid, VerifierScreenName));
+
+CREATE TABLE awareness.Alerts (OPScreenName varchar(100),  TweetText varchar(500), Tweetid bigint, PRIMARY KEY (Tweetid));
