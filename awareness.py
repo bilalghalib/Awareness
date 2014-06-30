@@ -2,14 +2,20 @@ from twython import Twython
 import random
 import pickle
 from time import sleep
+import sqlite3
 
+
+#### Connect to the database ####
+
+conn = sqlite3.connect('listOfTweets.db')
+c = conn.cursor()
 
 #### This stuff connects us to twitter.com
 
 APP_KEY = 'ask'
 APP_SECRET = 'me'
 OAUTH_TOKEN = 'on'
-OAUTH_TOKEN_SECRET = 'bg@bilalghalib.com'
+OAUTH_TOKEN_SECRET = 'twitter.com/weaware'
 
 twitter = Twython(APP_KEY, APP_SECRET, OAUTH_TOKEN, OAUTH_TOKEN_SECRET)
 
@@ -37,9 +43,12 @@ peopleWhoCare = twitter.get_list_members(slug='iraq-car-bomb-admin-list',owner_s
 
 for member in peopleWhoCare['users']:
 	pickRandomTweet = random.randint(0,len(results['statuses'])-1)
-	textOut=results['statuses'][pickRandomTweet]['text']
-	tweetPerson=results['statuses'][pickRandomTweet]['user']['screen_name']	
-	idOut=results['statuses'][pickRandomTweet]['id']
+	jasonOfCurrentTweet=results['statuses'][pickRandomTweet]
+	textOut=jasonOfCurrentTweet['text']
+	tweetPerson=jasonOfCurrentTweet['user']['screen_name']	
+	idOut=jasonOfCurrentTweet['id']
+	urlToSave=jasonOfCurrentTweet['entities']['urls'][0]['expanded_url']	
+	timeTweeted = jasonOfCurrentTweet['created_at']
 	nameOut = member['screen_name']
 	print textOut
 	print nameOut
@@ -48,10 +57,12 @@ for member in peopleWhoCare['users']:
 	messageToMember ="@" + nameOut + " Help by checking event and RT if valid " + URLOut 
 	messageToMember = messageToMember + """ " """ + textOut[0:42] + """ " """
 	print messageToMember[0:139]
-	twitter.update_status(status=messageToMember[0:139])
+	#twitter.update_status(status=messageToMember[0:139])
 	sleep(0.1)	
 	tweetsChecked[idOut] = (nameOut, tweetPerson)
 	print tweetPerson
+	c.execute("""INSERT INTO storedTweets VALUES (nameOut, idOut, nameOut, tweetPerson, 0, urlToSave, timeTweeted,jasonOfCurrentTweet)""")
+
 
 #Go throught the list of the people who care and pick a random tweet from the search and send it to them
 #Sending is commented out because I don't want to get rate limited (help?)
@@ -67,7 +78,13 @@ for member in peopleWhoCare['users']:
 # HAHAHA, in trying to describe how the code was broken, I fixed it. All this can be much cleaner, I don't like the stuff
 # that looks like: tweetsChecked.items()[x][1][0] - it's hard to read, how can we make this more legible?
 # Also to make this more robust we should have a larger admin list and make sure to cross validate / or NLP to find events in 
+
 numPotentialRetweets = len(tweetsChecked)
+conn.row_factory = sqlite3.Row
+c = conn.cursor()
+c.execute('select * from storedTweets')
+
+
 for x in range(0,numPotentialRetweets):
 	currentTweetId = tweetsChecked.items()[x][0]
 	currentTweetUser = tweetsChecked.items()[x][1][0]
