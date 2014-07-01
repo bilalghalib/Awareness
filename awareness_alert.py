@@ -3,16 +3,31 @@ import random
 import MySQLdb as mdb
 import urllib2, httplib
 
+def followURL(url):
+	request = urllib2.Request(rand['entities']['urls'][0]['expanded_url'])
+	opener = urllib2.build_opener()
+	f = opener.open(request)
+	return f.url
+
+
 #MySQL Time!
 conn = mdb.connect('localhost', 'awareness', 'changeme', 'awareness')
 cur = conn.cursor()
 
 #### This stuff connects us to twitter.com
 
-APP_KEY = 'nope'
-APP_SECRET = 'nope'
-OAUTH_TOKEN = 'nope'
-OAUTH_TOKEN_SECRET = 'nope'
+APP_KEY = 'no'
+APP_SECRET = 'no'
+OAUTH_TOKEN = 'maybe?'
+OAUTH_TOKEN_SECRET = 'jk'
+
+urlcount = cur.execute('SELECT URL FROM Alerts;')
+urls = list()
+i = 0
+while i < urlcount:
+	urls.append(cur.fetchone()[0])
+	i += 1
+
 
 twitter = Twython(APP_KEY, APP_SECRET, OAUTH_TOKEN, OAUTH_TOKEN_SECRET)
 
@@ -20,7 +35,7 @@ results = twitter.search(q='iraq car bomb', count=200)
 
 peopleWhoCare = twitter.get_list_members(slug='iraq-car-bomb-admin-list',owner_screen_name='weaware')
 
-rand = random.choice(results['statuses'])
+#rand = random.choice(results['statuses'])
 
 #This is a temporary hacked solution. Ideally we just insert the IDs of all of our own tweets into a table.
 #However I'd like a little more time to think about the structure 
@@ -32,21 +47,24 @@ for t in ourtweets:
 	ourids.append(t['id'])
 
 #We don't want our own tweets and we aren't interested if there is not a URL
-while rand['id'] in ourids or len(rand['entities']['urls']) == 0:
-	rand = random.choice(results['statuses'])
 
-#Follow our URL to make sure it is not redirected. 
-#This is important for identifying unique reports
-request = urllib2.Request(rand['entities']['urls'][0]['expanded_url'])
-opener = urllib2.build_opener()
-f = opener.open(request)
+acceptable = list()
 
-try:
-	cur.execute("INSERT INTO Alerts (OPScreenName, TweetText, Tweetid, URL) VALUES ('%s', '%s', %s, '%s');" % (rand['user']['screen_name'], rand['text'], rand['id'], f.url))
-	conn.commit() 
-	for p in peopleWhoCare['users']:
-		url = "https://twitter.com/%s/status/%s/" % (rand['user']['screen_name'], rand['id'])
-		message = "@" + p['screen_name'] + " Please retweet if this is a valid event: " + url
-		twitter.update_status(status=message)
-except mdb.Error, e:
-	print e
+for r in results['statuses']:
+	if r['id'] not in ourids and len(r['entities']['urls']) != 0:
+		if r['entities']['urls'][0]['expanded_url'] not in urls:
+			acceptable.append(r)
+
+if len(acceptable) != 0:
+
+	rand = random.choice(acceptable)
+
+	try:
+		cur.execute("INSERT INTO Alerts (OPScreenName, TweetText, Tweetid, URL) VALUES ('%s', '%s', %s, '%s');" % (rand['user']['screen_name'], rand['text'], rand['id'], followURL(rand['entities']['urls'][0]['expanded_url'])))
+		conn.commit() 
+		for p in peopleWhoCare['users']:
+			url = "https://twitter.com/%s/status/%s/" % (rand['user']['screen_name'], rand['id'])
+			message = "@" + p['screen_name'] + " Please retweet if this is a valid event: " + url
+			twitter.update_status(status=message)
+	except mdb.Error, e:
+		print e
