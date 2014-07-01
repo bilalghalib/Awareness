@@ -1,48 +1,70 @@
-
-#!/usr/bin/env python
-
 from twython import Twython
 import random
-import pickle
-import datetime
-from datetime import timedelta
-from time import sleep
 import MySQLdb as mdb
+import urllib2
+
+def followURL(url):
+	request = urllib2.Request(rand['entities']['urls'][0]['expanded_url'])
+	opener = urllib2.build_opener()
+	f = opener.open(request)
+	return f.url
+
 
 #MySQL Time!
-conn = mdb.connect('localhost', 'awareness', '-5-fqRG7h1C1w93v4cXZLreFx', 'awareness')
+conn = mdb.connect('localhost', 'awareness', 'changeme', 'awareness')
 cur = conn.cursor()
 
 #### This stuff connects us to twitter.com
 
-APP_KEY = 'ask'
-APP_SECRET = 'me'
-OAUTH_TOKEN = 'on'
-OAUTH_TOKEN_SECRET = 'twitter.com/weaware'
+APP_KEY = 'no'
+APP_SECRET = 'no'
+OAUTH_TOKEN = 'maybe?'
+OAUTH_TOKEN_SECRET = 'jk'
+
+urlcount = cur.execute('SELECT URL FROM Verifications;')
+urls = list()
+i = 0
+while i < urlcount:
+	urls.append(cur.fetchone()[0])
+	i += 1
+
 
 twitter = Twython(APP_KEY, APP_SECRET, OAUTH_TOKEN, OAUTH_TOKEN_SECRET)
-twoDaysAgo=datetime.datetime.now() - timedelta(days=2)
-twoDaysAgo=twoDaysAgo.strftime('%Y-%m-%d')
 
-results = twitter.search(q='iraq car bomb', since=twoDaysAgo, count=200)
-
-#Looks like we're catching a lot of lame conversation. Time to get rid of replies...
+results = twitter.search(q='iraq car bomb', count=200)
 
 peopleWhoCare = twitter.get_list_members(slug='iraq-car-bomb-admin-list',owner_screen_name='weaware')
 
-rand = random.choice(results['statuses'])
+#rand = random.choice(results['statuses'])
 
+#This is a temporary hacked solution. Ideally we just insert the IDs of all of our own tweets into a table.
+#However I'd like a little more time to think about the structure 
+#Disgustin' hack. MAKE ME PRETTIER.
+ourtweets =  twitter.get_user_timeline(screen_name='weaware', count=200)
+ourids = list()
 
+for t in ourtweets:
+	ourids.append(t['id'])
 
-for p in peopleWhoCare['users']:
-        rand = random.choice(results['statuses'])
-        try:
-                cur.execute("INSERT INTO Alerts (OPScreenName, TweetText, Tweetid) VALUES ('%s', '%s', %s);" % (rand['user']['screen_name'], rand['text'], rand['id']))
-                conn.commit()
-                url = "https://twitter.com/%s/status/%s/" % (rand['user']['screen_name'], rand['id'])
-                message = "@" + p['screen_name'] + " Please retweet if this is a valid event: " + url
-                twitter.update_status(status=message)
-        except mdb.Error, e:
-                print e
+#We don't want our own tweets and we aren't interested if there is not a URL
 
+acceptable = list()
 
+for r in results['statuses']:
+	if r['id'] not in ourids and len(r['entities']['urls']) != 0:
+		if r['entities']['urls'][0]['expanded_url'] not in urls:
+			acceptable.append(r)
+
+if len(acceptable) != 0:
+
+	rand = random.choice(acceptable)
+
+	try:
+		cur.execute("INSERT INTO Alerts (OPScreenName, TweetText, Tweetid, URL) VALUES ('%s', '%s', %s, '%s');" % (rand['user']['screen_name'], rand['text'], rand['id'], followURL(rand['entities']['urls'][0]['expanded_url'])))
+		conn.commit() 
+		for p in peopleWhoCare['users']:
+			url = "https://twitter.com/%s/status/%s/" % (rand['user']['screen_name'], rand['id'])
+			message = "@" + p['screen_name'] + " Please retweet if this is a valid event: " + url
+			twitter.update_status(status=message)
+	except mdb.Error, e:
+		print e
