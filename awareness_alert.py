@@ -1,8 +1,7 @@
 from twython import Twython
 import random
-import pickle
-from time import sleep
 import MySQLdb as mdb
+import urllib2, httplib
 
 #MySQL Time!
 conn = mdb.connect('localhost', 'awareness', 'changeme', 'awareness')
@@ -19,8 +18,6 @@ twitter = Twython(APP_KEY, APP_SECRET, OAUTH_TOKEN, OAUTH_TOKEN_SECRET)
 
 results = twitter.search(q='iraq car bomb', count=200)
 
-#Looks like we're catching a lot of lame conversation. Time to get rid of replies...
-
 peopleWhoCare = twitter.get_list_members(slug='iraq-car-bomb-admin-list',owner_screen_name='weaware')
 
 rand = random.choice(results['statuses'])
@@ -34,11 +31,18 @@ ourids = list()
 for t in ourtweets:
 	ourids.append(t['id'])
 
-while rand['id'] in ourids:
+#We don't want our own tweets and we aren't interested if there is not a URL
+while rand['id'] in ourids or len(rand['entities']['urls']) == 0:
 	rand = random.choice(results['statuses'])
 
+#Follow our URL to make sure it is not redirected. 
+#This is important for identifying unique reports
+request = urllib2.Request(rand['entities']['urls'][0]['expanded_url'])
+opener = urllib2.build_opener()
+f = opener.open(request)
+
 try:
-	cur.execute("INSERT INTO Alerts (OPScreenName, TweetText, Tweetid) VALUES ('%s', '%s', %s);" % (rand['user']['screen_name'], rand['text'], rand['id']))
+	cur.execute("INSERT INTO Alerts (OPScreenName, TweetText, Tweetid, URL) VALUES ('%s', '%s', %s, '%s');" % (rand['user']['screen_name'], rand['text'], rand['id'], f.url))
 	conn.commit() 
 	for p in peopleWhoCare['users']:
 		url = "https://twitter.com/%s/status/%s/" % (rand['user']['screen_name'], rand['id'])
@@ -46,4 +50,3 @@ try:
 		twitter.update_status(status=message)
 except mdb.Error, e:
 	print e
-

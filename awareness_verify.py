@@ -1,7 +1,6 @@
 from twython import Twython
 import random
-import pickle
-from time import sleep
+import urllib2, httplib
 import MySQLdb as mdb
 
 #MySQL Time!
@@ -21,10 +20,10 @@ def getAlertedTweets():
 
 #### This stuff connects us to twitter.com
 
-APP_KEY = 'not'
-APP_SECRET = 'for'
-OAUTH_TOKEN = 'your'
-OAUTH_TOKEN_SECRET = 'eyes'
+APP_KEY = 'nope'
+APP_SECRET = 'nope'
+OAUTH_TOKEN = 'nope'
+OAUTH_TOKEN_SECRET = 'nope'
 
 twitter = Twython(APP_KEY, APP_SECRET, OAUTH_TOKEN, OAUTH_TOKEN_SECRET)
 
@@ -43,8 +42,11 @@ for p in peopleWhoCare['users']:
 			print "Not a retweet"
 	for r in retweets:
 		if long(r['retweeted_status']['id']) in alertedtweets:
+			request = urllib2.Request(r['rewteeted_status']['entities']['urls'][0]['expanded_url'])
+			opener = urllib2.build_opener()
+			f = opener.open(request)
 			try:
-				cur.execute("INSERT INTO Verifications (OPScreenname, TweetText, Tweetid, VerifierScreenName, VerifyingTweetID) VALUES ('%s', '%s', %s, '%s', %s);" % (r['retweeted_status']['user']['screen_name'], r['retweeted_status']['text'], r['retweeted_status']['id'], r['user']['screen_name'], r['id']))
+				cur.execute("INSERT INTO Verifications (OPScreenname, TweetText, Tweetid, VerifierScreenName, VerifyingTweetID, URL) VALUES ('%s', '%s', %s, '%s', %s, '%s');" % (r['retweeted_status']['user']['screen_name'], r['retweeted_status']['text'], r['retweeted_status']['id'], r['user']['screen_name'], r['id']), f.url)
 				conn.commit()
 			except mdb.Error, e:
 				print 'Something went wrong. Probably a primary key violation, which is Okey dokey!'
