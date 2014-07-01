@@ -4,7 +4,7 @@ import MySQLdb as mdb
 import urllib2
 
 def followURL(url):
-	request = urllib2.Request(rand['entities']['urls'][0]['expanded_url'])
+	request = urllib2.Request(url)
 	opener = urllib2.build_opener()
 	f = opener.open(request)
 	return f.url
@@ -16,10 +16,10 @@ cur = conn.cursor()
 
 #### This stuff connects us to twitter.com
 
-APP_KEY = 'no'
-APP_SECRET = 'no'
-OAUTH_TOKEN = 'maybe?'
-OAUTH_TOKEN_SECRET = 'jk'
+APP_KEY = ''
+APP_SECRET = ''
+OAUTH_TOKEN = ''
+OAUTH_TOKEN_SECRET = ''
 
 urlcount = cur.execute('SELECT URL FROM Verifications;')
 urls = list()
@@ -52,12 +52,17 @@ acceptable = list()
 
 for r in results['statuses']:
 	if r['id'] not in ourids and len(r['entities']['urls']) != 0:
-		if followURL(r['entities']['urls'][0]['expanded_url']) not in urls:
-			acceptable.append(r)
+		try:
+			if followURL(r['entities']['urls'][0]['expanded_url']) not in urls:
+				acceptable.append(r)
+		except urllib2.HTTPError, e:
+			print r['entities']['urls'][0]['expanded_url']
+			print e
 
 if len(acceptable) != 0:
 
 	rand = random.choice(acceptable)
+	print rand['entities']['urls'][0]['expanded_url']
 
 	try:
 		cur.execute("INSERT INTO Alerts (OPScreenName, TweetText, Tweetid, URL) VALUES ('%s', '%s', %s, '%s');" % (rand['user']['screen_name'], rand['text'], rand['id'], followURL(rand['entities']['urls'][0]['expanded_url'])))
