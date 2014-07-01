@@ -7,6 +7,13 @@ import MySQLdb as mdb
 conn = mdb.connect('localhost', 'awareness', 'changeme', 'awareness')
 cur = conn.cursor()
 
+def followURL(url):
+        request = urllib2.Request(url)
+        request.add_header('User-Agent', 'Mozilla/5.0 (Windows NT 6.1; rv:23.0) Gecko/20131011 Firefox/23.0')
+        opener = urllib2.build_opener()
+        f = opener.open(request)
+        return f.url
+
 
 def getAlertedTweets():
 	alertids = list()
@@ -43,11 +50,9 @@ for p in peopleWhoCare['users']:
 			print "Not a retweet"
 	for r in retweets:
 		if long(r['retweeted_status']['id']) in alertedtweets:
-			request = urllib2.Request(r['retweeted_status']['entities']['urls'][0]['expanded_url'])
-			opener = urllib2.build_opener()
-			f = opener.open(request)
+			followURL(r['retweeted_status']['entities']['urls'][0]['expanded_url'])
 			try:
-				cur.execute("INSERT INTO Verifications (OPScreenname, TweetText, Tweetid, VerifierScreenName, VerifyingTweetID, URL) VALUES ('%s', '%s', %s, '%s', %s, '%s');" % (r['retweeted_status']['user']['screen_name'], r['retweeted_status']['text'], r['retweeted_status']['id'], r['user']['screen_name'], r['id'], f.url))
+				cur.execute("INSERT INTO Verifications (OPScreenname, TweetText, Tweetid, VerifierScreenName, VerifyingTweetID, URL) VALUES ('%s', '%s', %s, '%s', %s, '%s');" % (r['retweeted_status']['user']['screen_name'], r['retweeted_status']['text'], r['retweeted_status']['id'], r['user']['screen_name'], r['id'], followURL(r['retweeted_status']['entities']['urls'][0]['expanded_url'])))
 				conn.commit()
 			except mdb.Error, e:
 				print 'Something went wrong. Probably a primary key violation, which is Okey dokey!'
