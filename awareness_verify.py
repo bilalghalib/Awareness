@@ -20,10 +20,11 @@ def getAlertedTweets():
 
 #### This stuff connects us to twitter.com
 
-APP_KEY = 'nope'
-APP_SECRET = 'nope'
-OAUTH_TOKEN = 'nope'
-OAUTH_TOKEN_SECRET = 'nope'
+APP_KEY = ''
+APP_SECRET = ''
+OAUTH_TOKEN = ''
+OAUTH_TOKEN_SECRET = ''
+
 
 twitter = Twython(APP_KEY, APP_SECRET, OAUTH_TOKEN, OAUTH_TOKEN_SECRET)
 
@@ -36,17 +37,17 @@ for p in peopleWhoCare['users']:
 	retweets = list()
 	for t in timeline:
 		try:
-			if t['retweeted_status'] is not None:
+			if t['retweeted_status'] is not None and len(t['retweeted_status']['entities']['urls']) != 0:
                 		retweets.append(t)
 		except KeyError:
 			print "Not a retweet"
 	for r in retweets:
 		if long(r['retweeted_status']['id']) in alertedtweets:
-			request = urllib2.Request(r['rewteeted_status']['entities']['urls'][0]['expanded_url'])
+			request = urllib2.Request(r['retweeted_status']['entities']['urls'][0]['expanded_url'])
 			opener = urllib2.build_opener()
 			f = opener.open(request)
 			try:
-				cur.execute("INSERT INTO Verifications (OPScreenname, TweetText, Tweetid, VerifierScreenName, VerifyingTweetID, URL) VALUES ('%s', '%s', %s, '%s', %s, '%s');" % (r['retweeted_status']['user']['screen_name'], r['retweeted_status']['text'], r['retweeted_status']['id'], r['user']['screen_name'], r['id']), f.url)
+				cur.execute("INSERT INTO Verifications (OPScreenname, TweetText, Tweetid, VerifierScreenName, VerifyingTweetID, URL) VALUES ('%s', '%s', %s, '%s', %s, '%s');" % (r['retweeted_status']['user']['screen_name'], r['retweeted_status']['text'], r['retweeted_status']['id'], r['user']['screen_name'], r['id'], f.url))
 				conn.commit()
 			except mdb.Error, e:
 				print 'Something went wrong. Probably a primary key violation, which is Okey dokey!'
