@@ -21,7 +21,7 @@ APP_SECRET = 'no'
 OAUTH_TOKEN = 'maybe?'
 OAUTH_TOKEN_SECRET = 'jk'
 
-urlcount = cur.execute('SELECT URL FROM Alerts;')
+urlcount = cur.execute('SELECT URL FROM Verifications;')
 urls = list()
 i = 0
 while i < urlcount:
