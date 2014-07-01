@@ -52,7 +52,7 @@ acceptable = list()
 
 for r in results['statuses']:
 	if r['id'] not in ourids and len(r['entities']['urls']) != 0:
-		if r['entities']['urls'][0]['expanded_url'] not in urls:
+		if followURL(r['entities']['urls'][0]['expanded_url']) not in urls:
 			acceptable.append(r)
 
 if len(acceptable) != 0:
