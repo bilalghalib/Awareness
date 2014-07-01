@@ -3,8 +3,10 @@ import random
 import MySQLdb as mdb
 import urllib2
 
+#Follow a URL to get the actual story URL
 def followURL(url):
 	request = urllib2.Request(url)
+	request.add_header('User-Agent', 'Mozilla/5.0 (Windows NT 6.1; rv:23.0) Gecko/20131011 Firefox/23.0')
 	opener = urllib2.build_opener()
 	f = opener.open(request)
 	return f.url
@@ -20,6 +22,7 @@ APP_KEY = ''
 APP_SECRET = ''
 OAUTH_TOKEN = ''
 OAUTH_TOKEN_SECRET = ''
+
 
 urlcount = cur.execute('SELECT URL FROM Verifications;')
 urls = list()
