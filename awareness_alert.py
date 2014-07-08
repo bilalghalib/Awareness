@@ -20,14 +20,14 @@ def followURL(url):
     return f.url
 
 
-conn = mdb.connect('localhost', 'changeme', 'changeme', 'changeme')
-cur = conn.cursor() 
+conn = mdb.connect('cga', 'cga', '-5-cga', 'cga')
+cur = conn.cursor()
 
 
-APP_KEY = 'changeme'
-APP_SECRET = 'changeme'
-OAUTH_TOKEN = 'changemechangeme'
-OAUTH_TOKEN_SECRET = 'changeme'
+APP_KEY = 'cga'
+APP_SECRET = 'cga'
+OAUTH_TOKEN = 'cga-cga'
+OAUTH_TOKEN_SECRET = 'cga'
 
 
 urlcount = cur.execute('SELECT URL FROM Verifications;')
@@ -39,7 +39,7 @@ while i < urlcount:
 
 twitter = Twython(APP_KEY, APP_SECRET, OAUTH_TOKEN, OAUTH_TOKEN_SECRET)
 
-halfADayAgo = datetime.datetime.now() - timedelta(hours=1212)
+halfADayAgo = datetime.datetime.now() - timedelta(hours=12)
 halfADayAgo = halfADayAgo.strftime('%Y-%m-%d')
 
 results = twitter.search(q='iraq car bomb', since=halfADayAgo,
