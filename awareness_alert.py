@@ -20,14 +20,14 @@ def followURL(url):
     return f.url
 
 
-conn = mdb.connect('cga', 'cga', '-5-cga', 'cga')
+conn = mdb.connect('change', 'change', '-5-change', 'change')
 cur = conn.cursor()
 
 
-APP_KEY = 'cga'
-APP_SECRET = 'cga'
-OAUTH_TOKEN = 'cga-cga'
-OAUTH_TOKEN_SECRET = 'cga'
+APP_KEY = 'change'
+APP_SECRET = 'change'
+OAUTH_TOKEN = 'change'
+OAUTH_TOKEN_SECRET = 'change'
 
 
 urlcount = cur.execute('SELECT URL FROM Verifications;')
@@ -65,21 +65,25 @@ for r in results['statuses']:
         except urllib2.HTTPError, e:
             print r['entities']['urls'][0]['expanded_url']
             print e
+looper=0
 
 if len(acceptable) != 0:
     for p in peopleWhoCare['users']:
-        rand = random.choice(acceptable)
+        personToPing = looper % len(acceptable)
+        rand = acceptable[personToPing]
+        looper=looper+1 #This looper business takes the number of acceptable reported events and sends it to everyone, even if people get duplicates of other 
         print rand['entities']['urls'][0]['expanded_url']
         try:
-            cur.execute("INSERT INTO Alerts (OPScreenName, TweetText, Tweetid, URL) VALUES ('%s', '%s', %s, '%s');"
+            cur.execute("INSERT INTO Alerts (OPScreenName, TweetText, Tweetid, URL, ValidatorScreenName, isValid) VALUES ('%s', '%s', %s, '%s','%s',%s);"
             % (rand['user']['screen_name'], rand['text'],
             rand['id'], followURL(rand['entities']['urls'
-            ][0]['expanded_url'])))
+            ][0]['expanded_url']),p['screen_name'],0))
             conn.commit()
             url = 'https://twitter.com/%s/status/%s/' % (rand['user'
                     ]['screen_name'], rand['id'])
             message = '@' + p['screen_name']\
                  + ' Please retweet if this is a valid event: ' + url
+            print message
             try:
                 twitter.update_status(status=message)
             except:

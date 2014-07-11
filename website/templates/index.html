@@ -1,0 +1,27 @@
+$def with (alerts, form)
+
+<form action="" method="post">
+$:form.render()
+</form>
+
+
+
+<table>
+    <tr>
+        <th>Add a validated event:?</th>
+        <th></th>
+    </tr>
+$for alert in alerts:
+    <tr>
+        <td>$alert.URL</td>
+        <td>$alert.ValidatorScreenName</td>
+        <td>
+            <form action="/del/$alert.Tweetid" method="post">
+                <input type="submit" value="Delete"/>
+            </form>
+        </td>
+    </tr>    
+</table>  
+
+
+
