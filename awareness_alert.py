@@ -10,6 +10,18 @@ from time import sleep
 import MySQLdb as mdb
 import urllib2
 
+#Connect to our database.
+conn = mdb.connect('change', 'change', '-5-change', 'change')
+cur = conn.cursor()
+
+APP_KEY = 'change'
+APP_SECRET = 'change'
+OAUTH_TOKEN = 'change-change'
+OAUTH_TOKEN_SECRET = 'change'
+
+#Authenticate our app with twitter
+twitter = Twython(APP_KEY, APP_SECRET, OAUTH_TOKEN, OAUTH_TOKEN_SECRET)
+
 #Follow a shortened URL.
 def followURL(url):
     request = urllib2.Request(url)
@@ -20,16 +32,6 @@ def followURL(url):
     f = opener.open(request)
     return f.url
 
-#Connect to our database.
-conn = mdb.connect('change', 'change', '-5-change', 'change')
-cur = conn.cursor()
-
-
-APP_KEY = 'change'
-APP_SECRET = 'change'
-OAUTH_TOKEN = 'change'
-OAUTH_TOKEN_SECRET = 'change'
-
 #Find the number of verifications we currently have(?)
 urlcount = cur.execute('SELECT URL FROM Verifications;')
 urls = list()
@@ -38,8 +40,6 @@ while i < urlcount:
     urls.append(cur.fetchone()[0])
     i += 1
 
-#Authenticate our app with twitter
-twitter = Twython(APP_KEY, APP_SECRET, OAUTH_TOKEN, OAUTH_TOKEN_SECRET)
 
 halfADayAgo = datetime.datetime.now() - timedelta(hours=12)
 halfADayAgo = halfADayAgo.strftime('%Y-%m-%d')

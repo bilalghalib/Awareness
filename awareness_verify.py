@@ -5,9 +5,19 @@ import random
 import urllib2
 import httplib
 import MySQLdb as mdb
+from datetime import datetime
 
-conn = mdb.connect('change', 'change', '-5-change', 'change')
+#Connect to our database.
+conn = mdb.connect('localhost', 'change', '-5-change', 'change')
 cur = conn.cursor()
+
+APP_KEY = 'change'
+APP_SECRET = 'change'
+OAUTH_TOKEN = 'change-change'
+OAUTH_TOKEN_SECRET = 'change'
+
+#Authenticate our app with twitter
+twitter = Twython(APP_KEY, APP_SECRET, OAUTH_TOKEN, OAUTH_TOKEN_SECRET)
 
 #This will follow a shortened URL to get the final destination.
 #This is useful because it allows us to quickly determine if we've been to an article before.
@@ -54,15 +64,6 @@ def getAlertedTweets():
         count += 1
     return alertids
 
-APP_KEY = 'change'
-APP_SECRET = 'change'
-OAUTH_TOKEN = 'change-change'
-OAUTH_TOKEN_SECRET = 'change'
-
-
-#Authenticate our app with Twitter
-twitter = Twython(APP_KEY, APP_SECRET, OAUTH_TOKEN, OAUTH_TOKEN_SECRET)
-
 #Get the sets of people who verify (peopleWhoCare) 
 #and the people who carry out kind acts (kindnessResponders)
 peopleWhoCare = twitter.get_list_members(slug='iraq-car-bomb-admin-list'
@@ -96,6 +97,12 @@ for p in peopleWhoCare['users']:
                         r['user']['screen_name'], r['id']))
                 cur.execute("UPDATE Alerts SET isPublished=1 WHERE Tweetid=(%s);" % (r['retweeted_status']['id']) )
                 cur.execute("UPDATE Alerts SET isValid=1 WHERE Tweetid=(%s);" % (r['retweeted_status']['id']) )
+                cur.execute("SELECT percentDamaged FROM Response ORDER BY timeAndDate DESC LIMIT 1;")
+                updatedDamageLevel = cur.fetchone()[0]-10
+                curURL='https://twitter.com/%s/status/%s/' % (r['user']['screen_name'], r['retweeted_status']['id'])
+                cur.execute("INSERT INTO Response (percentDamaged, damageURL, positiveAction, timeAndDate) VALUES (%s,'%s','%s','%s');" % 
+                    (updatedDamageLevel, curURL, 'NULL', datetime.now().isoformat(' ')  ) )
+                )
                 sendVerifiedTweet(r['user']['screen_name'],r['retweeted_status']['id']) 
                 for kindPerson in kindnessResponders['users']:
                     tweetUponAngels(r['user']['screen_name'],'https://twitter.com/%s/status/%s/' % (r['user']['screen_name'], r['retweeted_status']['id']))
@@ -108,6 +115,15 @@ for p in peopleWhoCare['users']:
 cur.execute("SELECT URL, ValidatorScreenName, Tweetid FROM Alerts where isPublished IS NULL AND isValid=1;")
 for ValidatedEvents in cur:
     tweetUponAngels(ValidatedEvents[1],ValidatedEvents[0])
+    try:
+        cur.execute("SELECT percentDamaged FROM Response ORDER BY timeAndDate DESC LIMIT 1;")
+        updatedDamageLevel = cur.fetchone()[0]-10
+        cur.execute("INSERT INTO Response (percentDamaged, damageURL, positiveAction, timeAndDate) VALUES (%s,'%s','%s','%s');" % 
+            (updatedDamageLevel, ValidatedEvents[0], 'NULL', datetime.now().isoformat(' ')  ) )
+        print "Damage updated"
+    except:
+        print "sommatBorked"
+
     try:
         cur.execute("INSERT INTO Verifications (OPScreenname, TweetText, Tweetid, VerifierScreenName, VerifyingTweetID) VALUES ('%s', '%s', %s, '%s', %s);"
         % (tweetPerson, 'noTweetText', 00000,
