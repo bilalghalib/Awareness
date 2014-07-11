@@ -9,6 +9,8 @@ import MySQLdb as mdb
 conn = mdb.connect('change', 'change', '-5-change', 'change')
 cur = conn.cursor()
 
+#This will follow a shortened URL to get the final destination.
+#This is useful because it allows us to quickly determine if we've been to an article before.
 def followURL(url):
     request = urllib2.Request(url)
     request.add_header('User-Agent',
@@ -18,6 +20,7 @@ def followURL(url):
     f = opener.open(request)
     return f.url
 
+#Straightforward. Ask our volunteers to do something about an event that was validated.
 def tweetUponAngels(tweetPerson,URLOut):
     for kindPerson in kindnessResponders['users']:
         messageOfKindness = '@' + kindPerson['screen_name']\
@@ -28,6 +31,7 @@ def tweetUponAngels(tweetPerson,URLOut):
         except:
             print "probably a dupe"
 
+#Announce that a person has verified an article. 
 def sendVerifiedTweet(tweetPerson,idOut):
     messageOfVerification = '.@' + tweetPerson\
     + ' has verified this attack: ' + 'https://twitter.com/%s/status/%s/' % (tweetPerson, idOut)
@@ -38,6 +42,7 @@ def sendVerifiedTweet(tweetPerson,idOut):
     except:
         print "dupe"
 
+#What tweets have we already asked for verification?
 def getAlertedTweets():
     alertids = list()
     numentries = \
@@ -54,16 +59,24 @@ APP_SECRET = 'change'
 OAUTH_TOKEN = 'change-change'
 OAUTH_TOKEN_SECRET = 'change'
 
+
+#Authenticate our app with Twitter
 twitter = Twython(APP_KEY, APP_SECRET, OAUTH_TOKEN, OAUTH_TOKEN_SECRET)
 
+#Get the sets of people who verify (peopleWhoCare) 
+#and the people who carry out kind acts (kindnessResponders)
 peopleWhoCare = twitter.get_list_members(slug='iraq-car-bomb-admin-list'
         , owner_screen_name='weaware')
 kindnessResponders = twitter.get_list_members(slug='kindness-responders'
         , owner_screen_name='weaware')
 
-
+#Get the tweets we've already asked for verification with
 alertedtweets = getAlertedTweets()
 
+#For every person in the set of verifiying users,
+#Check their recent statuses. If their status contains a retweet of a status
+#we asked about, try to inset that verification into our Verifications table.
+#Set the isPublished and isValid flags to 1(need more info about what these flags mean...)
 for p in peopleWhoCare['users']:
     timeline = twitter.get_user_timeline(screen_name=p['screen_name'],
             count=200, exclude_replies=True)

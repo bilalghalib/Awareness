@@ -10,6 +10,7 @@ from time import sleep
 import MySQLdb as mdb
 import urllib2
 
+#Follow a shortened URL.
 def followURL(url):
     request = urllib2.Request(url)
     request.add_header('User-Agent',
@@ -19,7 +20,7 @@ def followURL(url):
     f = opener.open(request)
     return f.url
 
-
+#Connect to our database.
 conn = mdb.connect('change', 'change', '-5-change', 'change')
 cur = conn.cursor()
 
@@ -29,7 +30,7 @@ APP_SECRET = 'change'
 OAUTH_TOKEN = 'change'
 OAUTH_TOKEN_SECRET = 'change'
 
-
+#Find the number of verifications we currently have(?)
 urlcount = cur.execute('SELECT URL FROM Verifications;')
 urls = list()
 i = 0
@@ -37,17 +38,21 @@ while i < urlcount:
     urls.append(cur.fetchone()[0])
     i += 1
 
+#Authenticate our app with twitter
 twitter = Twython(APP_KEY, APP_SECRET, OAUTH_TOKEN, OAUTH_TOKEN_SECRET)
 
 halfADayAgo = datetime.datetime.now() - timedelta(hours=12)
 halfADayAgo = halfADayAgo.strftime('%Y-%m-%d')
 
+#Search Twitter for "iraq car bomb"
 results = twitter.search(q='iraq car bomb', since=halfADayAgo,
                          count=200)
 
+#Get the set of users who are volunteering as verifiers
 peopleWhoCare = twitter.get_list_members(slug='iraq-car-bomb-admin-list'
         , owner_screen_name='weaware')
 
+#Get our own tweets
 ourtweets = twitter.get_user_timeline(screen_name='weaware', count=200)
 ourids = list()
 
@@ -55,7 +60,8 @@ for t in ourtweets:
     ourids.append(t['id'])
 
 acceptable = list()
-
+#TODO: Bilal, could you please explain all code after this point? 
+#It has changed a bit since I had my hands on it.
 for r in results['statuses']:
     if r['id'] not in ourids and len(r['entities']['urls']) != 0:
         try:
