@@ -7,13 +7,23 @@ import httplib
 import MySQLdb as mdb
 from datetime import datetime
 
+import bitlyapi
+
+#connect to urlshortener
+
+API_USER = "change"
+API_KEY = "change"
+
+bitlyShortener = bitlyapi.BitLy(API_USER, API_KEY)
+
+
 #Connect to our database.
-conn = mdb.connect('localhost', 'change', '-5-change', 'change')
+conn = mdb.connect('change', 'change', 'change', 'change')
 cur = conn.cursor()
 
 APP_KEY = 'change'
 APP_SECRET = 'change'
-OAUTH_TOKEN = 'change-change'
+OAUTH_TOKEN = 'change'
 OAUTH_TOKEN_SECRET = 'change'
 
 #Authenticate our app with twitter
@@ -32,11 +42,12 @@ def followURL(url):
 
 #Straightforward. Ask our volunteers to do something about an event that was validated.
 def tweetUponAngels(tweetPerson,URLOut):
+    shortURLOut = bitlyShortener.shorten(longUrl=URLOut)
     for kindPerson in kindnessResponders['users']:
         messageOfKindness = '@' + kindPerson['screen_name']\
-        + ' Something bad happened. Please respond with an act of kindness. This event was validated by: @' + tweetPerson + ' '  + URLOut
+        + ' Something bad happened. Please respond with an act of kindness. Event validated by @' + tweetPerson + ' '  + shortURLOut['url']
         try:
-            #twitter.update_status(status=messageOfKindness[0:139])
+            twitter.update_status(status=messageOfKindness[0:140])
             print message
         except:
             print "probably a dupe"
@@ -48,7 +59,7 @@ def sendVerifiedTweet(tweetPerson,idOut):
     print messageOfVerification[0:139]
     try:
         print messageOfVerification
-        #twitter.update_status(status=messageOfVerification[0:139])
+        twitter.update_status(status=messageOfVerification[0:140])
     except:
         print "dupe"
 
@@ -90,6 +101,7 @@ for p in peopleWhoCare['users']:
             print 'Not a retweet'
     for r in retweets:
         if ( long(r['retweeted_status']['id']) in alertedtweets ):
+            print long(r['retweeted_status']['id'])
             try:
                 cur.execute("INSERT INTO Verifications (OPScreenname, TweetText, Tweetid, VerifierScreenName, VerifyingTweetID) VALUES ('%s', '%s', %s, '%s', %s);"
                     % (r['retweeted_status']['user']['screen_name'], r['retweeted_status'
@@ -102,10 +114,11 @@ for p in peopleWhoCare['users']:
                 curURL='https://twitter.com/%s/status/%s/' % (r['user']['screen_name'], r['retweeted_status']['id'])
                 cur.execute("INSERT INTO Response (percentDamaged, damageURL, positiveAction, timeAndDate) VALUES (%s,'%s','%s','%s');" % 
                     (updatedDamageLevel, curURL, 'NULL', datetime.now().isoformat(' ')  ) )
-                )
                 sendVerifiedTweet(r['user']['screen_name'],r['retweeted_status']['id']) 
                 for kindPerson in kindnessResponders['users']:
                     tweetUponAngels(r['user']['screen_name'],'https://twitter.com/%s/status/%s/' % (r['user']['screen_name'], r['retweeted_status']['id']))
+                    print r['user']['screen_name']
+                    print 'https://twitter.com/%s/status/%s/' % (r['user']['screen_name'], r['retweeted_status']['id'])
                 conn.commit()
             except mdb.Error, e:
                 print 'Something went wrong. Probably a primary key violation, which is Okey dokey!'

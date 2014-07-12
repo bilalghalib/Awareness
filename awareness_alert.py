@@ -11,12 +11,12 @@ import MySQLdb as mdb
 import urllib2
 
 #Connect to our database.
-conn = mdb.connect('change', 'change', '-5-change', 'change')
+conn = mdb.connect('localhost', 'change', 'change', 'change')
 cur = conn.cursor()
 
 APP_KEY = 'change'
 APP_SECRET = 'change'
-OAUTH_TOKEN = 'change-change'
+OAUTH_TOKEN = 'change'
 OAUTH_TOKEN_SECRET = 'change'
 
 #Authenticate our app with twitter
@@ -72,7 +72,6 @@ for r in results['statuses']:
             print r['entities']['urls'][0]['expanded_url']
             print e
 looper=0
-
 if len(acceptable) != 0:
     for p in peopleWhoCare['users']:
         personToPing = looper % len(acceptable)
@@ -80,19 +79,21 @@ if len(acceptable) != 0:
         looper=looper+1 #This looper business takes the number of acceptable reported events and sends it to everyone, even if people get duplicates of other 
         print rand['entities']['urls'][0]['expanded_url']
         try:
-            cur.execute("INSERT INTO Alerts (OPScreenName, TweetText, Tweetid, URL, ValidatorScreenName, isValid) VALUES ('%s', '%s', %s, '%s','%s',%s);"
-            % (rand['user']['screen_name'], rand['text'],
+            print "('%s', '%s', %s, '%s','%s',%s);" % (rand['user']['screen_name'].encode('utf-8'), rand['text'].encode('utf-8'), rand['id'], 
+                followURL(rand['entities']['urls'][0]['expanded_url']).encode('latin-1', 'replace'),p['screen_name'].encode('utf-8'),0) 
+            cur.execute("INSERT INTO Alerts (OPScreenName, TweetText, Tweetid, URL, ValidatorScreenName, isValid) VALUES ('%s', '%s', %s, '%s','%s','%s');"
+            % (rand['user']['screen_name'].encode('utf-8'), rand['text'].encode('utf-8'),
             rand['id'], followURL(rand['entities']['urls'
-            ][0]['expanded_url']),p['screen_name'],0))
+            ][0]['expanded_url']).encode('utf-8'),p['screen_name'].encode('utf-8'),'NULL'))
             conn.commit()
-            url = 'https://twitter.com/%s/status/%s/' % (rand['user'
-                    ]['screen_name'], rand['id'])
-            message = '@' + p['screen_name']\
-                 + ' Please retweet if this is a valid event: ' + url
-            print message
-            try:
-                twitter.update_status(status=message)
-            except:
-                print "probably a dupe"
         except mdb.Error, e:
             print e
+        url = 'https://twitter.com/%s/status/%s/' % (rand['user'
+            ]['screen_name'], rand['id'])
+        message = '@' + p['screen_name']\
+        + ' Please retweet if this is a valid event: ' + url
+        print message
+        try:
+            twitter.update_status(status=message)
+        except:
+            print "probably a dupe"
