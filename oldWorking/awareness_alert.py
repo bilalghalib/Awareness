@@ -11,13 +11,13 @@ import MySQLdb as mdb
 import urllib2
 
 #Connect to our database.
-conn = mdb.connect('Chang', 'Chang', 'Chang', 'Chang')
+conn = mdb.connect('localhost', 'awareness', '-5-fqRG7h1C1w93v4cXZLreFx', 'awareness')
 cur = conn.cursor()
 
-APP_KEY = 'Chang'
-APP_SECRET = 'Chang'
-OAUTH_TOKEN = 'Chang'
-OAUTH_TOKEN_SECRET = 'Chang'
+APP_KEY = 'JBWxj33Qv1fXPgzossjV3g'
+APP_SECRET = '0uSXJYofTiiyz2nNkgP2ko1c1niFSBABYO3BpQgzg'
+OAUTH_TOKEN = '2362763762-3n6lBjHvvoE5tcMKRJS0iMyF8kWYlhLhiH5j6U5'
+OAUTH_TOKEN_SECRET = 'IrVhcN6edKbMy06ItGoRxIlxLh1CFbhO8UyBx5l3QIELg'
 
 #Authenticate our app with twitter
 twitter = Twython(APP_KEY, APP_SECRET, OAUTH_TOKEN, OAUTH_TOKEN_SECRET)
@@ -32,18 +32,6 @@ def followURL(url):
     f = opener.open(request)
     return f.url
 
-#What tweets have already been flagged as unverified?
-def getUnverified():
-    alertids = list()
-    numentries = \
-        cur.execute('SELECT isValid, Tweetid FROM Alerts WHERE isValid=2;'
-                    )
-    for row in cur:
-        print row[1]
-        if row[1] not in alertids:
-            alertids.append(row[1])
-    return alertids
-
 #Find the number of verifications we currently have(?)
 urlcount = cur.execute('SELECT URL FROM Verifications;')
 urls = list()
@@ -51,6 +39,7 @@ i = 0
 while i < urlcount:
     urls.append(cur.fetchone()[0])
     i += 1
+
 
 halfADayAgo = datetime.datetime.now() - timedelta(hours=12)
 halfADayAgo = halfADayAgo.strftime('%Y-%m-%d')
@@ -82,7 +71,6 @@ for r in results['statuses']:
         except urllib2.HTTPError, e:
             print r['entities']['urls'][0]['expanded_url']
             print e
-unverifiedList=getUnverified()
 looper=0
 if len(acceptable) != 0:
     for p in peopleWhoCare['users']:
@@ -91,27 +79,22 @@ if len(acceptable) != 0:
         looper=looper+1 #This looper business takes the number of acceptable reported events and sends it to everyone, even if people get duplicates of other 
         print rand['entities']['urls'][0]['expanded_url']
         try:
-            if rand['id'] not in unverifiedList:
-                print "Has not been classified as not real yet"
-                try:
-                    print "('%s', '%s', %s, '%s','%s',%s);" % (rand['user']['screen_name'].encode('utf-8'), rand['text'].encode('utf-8'), rand['id'], 
-                        followURL(rand['entities']['urls'][0]['expanded_url']).encode('latin-1', 'replace'),p['screen_name'].encode('utf-8'),'NULL') 
-                    cur.execute("INSERT INTO Alerts (OPScreenName, TweetText, Tweetid, URL, ValidatorScreenName, isValid) VALUES ('%s', '%s', %s, '%s','%s','%s');"
-                    % (rand['user']['screen_name'].encode('utf-8'), rand['text'].encode('utf-8'),
-                    rand['id'], followURL(rand['entities']['urls'
-                    ][0]['expanded_url']).encode('utf-8'),p['screen_name'].encode('utf-8'),'NULL'))
-                    conn.commit()
-                except mdb.Error, e:
-                    print e                ]['screen_name'], rand['id'])
-                message = '@' + p['screen_name']\
-                + ' Please retweet if this is a valid event: ' + url
-                print message
-                try:
-                    twitter.update_status(status=message)
-                except:
-                    print "probably a dupe"
-            else:
-                print "Classified as not real"
-                print rand['id']
+            print "('%s', '%s', %s, '%s','%s',%s);" % (rand['user']['screen_name'].encode('utf-8'), rand['text'].encode('utf-8'), rand['id'], 
+                followURL(rand['entities']['urls'][0]['expanded_url']).encode('latin-1', 'replace'),p['screen_name'].encode('utf-8'),0) 
+            cur.execute("INSERT INTO Alerts (OPScreenName, TweetText, Tweetid, URL, ValidatorScreenName, isValid) VALUES ('%s', '%s', %s, '%s','%s','%s');"
+            % (rand['user']['screen_name'].encode('utf-8'), rand['text'].encode('utf-8'),
+            rand['id'], followURL(rand['entities']['urls'
+            ][0]['expanded_url']).encode('utf-8'),p['screen_name'].encode('utf-8'),'NULL'))
+            conn.commit()
+        except mdb.Error, e:
+            print e
+        url = 'https://twitter.com/%s/status/%s/' % (rand['user'
+            ]['screen_name'], rand['id'])
+        message = '@' + p['screen_name']\
+        + ' Please retweet if this is a valid event: ' + url
+        print message
+        try:
+            twitter.update_status(status=message)
         except:
-            print "something is up with unverifiedList or rand['id]"
+            print "probably a dupe"
+
