@@ -7,4 +7,5 @@ debconf-set-selections <<< 'mysql-server mysql-server/root_password_again passwo
 apt-get update
 apt-get install -y python-pip python-dev screen mysql-server libmysqlclient-dev;
 pip install -r /vagrant/requirements.txt;
-mysql --password=changeme < /vagrant/Awareness.sql
+mysql --password=changeme < /vagrant/Awareness.sql;
+screen -d -m bash -c "python /vagrant/website/awaresite.py";
