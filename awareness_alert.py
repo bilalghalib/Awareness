@@ -11,13 +11,13 @@ import MySQLdb as mdb
 import urllib2
 
 #Connect to our database.
-conn = mdb.connect('Chang', 'Chang', 'Chang', 'Chang')
+conn = mdb.connect('chang', 'chang', 'chang', 'chang')
 cur = conn.cursor()
 
-APP_KEY = 'Chang'
-APP_SECRET = 'Chang'
-OAUTH_TOKEN = 'Chang'
-OAUTH_TOKEN_SECRET = 'Chang'
+APP_KEY = 'chang'
+APP_SECRET = 'chang'
+OAUTH_TOKEN = 'chang'
+OAUTH_TOKEN_SECRET = 'chang'
 
 #Authenticate our app with twitter
 twitter = Twython(APP_KEY, APP_SECRET, OAUTH_TOKEN, OAUTH_TOKEN_SECRET)
@@ -36,7 +36,7 @@ def followURL(url):
 def getUnverified():
     alertids = list()
     numentries = \
-        cur.execute('SELECT isValid, Tweetid FROM Alerts WHERE isValid=2;'
+        cur.execute('SELECT isValid, Tweetid FROM Alerts WHERE isValid=2;' #isValid = 2 is for someone who's confirmed it NOT valid
                     )
     for row in cur:
         print row[1]
@@ -82,7 +82,9 @@ for r in results['statuses']:
         except urllib2.HTTPError, e:
             print r['entities']['urls'][0]['expanded_url']
             print e
-unverifiedList=getUnverified()
+
+unverifiedList = getUnverified()
+
 looper=0
 if len(acceptable) != 0:
     for p in peopleWhoCare['users']:
@@ -102,7 +104,9 @@ if len(acceptable) != 0:
                     ][0]['expanded_url']).encode('utf-8'),p['screen_name'].encode('utf-8'),'NULL'))
                     conn.commit()
                 except mdb.Error, e:
-                    print e                ]['screen_name'], rand['id'])
+                    print e                
+                url = 'https://twitter.com/%s/status/%s/' % (rand['user'
+                    ]['screen_name'], rand['id'])
                 message = '@' + p['screen_name']\
                 + ' Please retweet if this is a valid event: ' + url
                 print message
@@ -111,7 +115,7 @@ if len(acceptable) != 0:
                 except:
                     print "probably a dupe"
             else:
-                print "Classified as not real"
+                print "Classed as not real"
                 print rand['id']
         except:
             print "something is up with unverifiedList or rand['id]"

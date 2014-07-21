@@ -11,20 +11,20 @@ import bitlyapi
 
 #connect to urlshortener
 
-API_USER = "Chang"
-API_KEY = "Chang"
+API_USER = "Change"
+API_KEY = "Change"
 
 bitlyShortener = bitlyapi.BitLy(API_USER, API_KEY)
 
 
 #Connect to our database.
-conn = mdb.connect('Chang', 'Chang', 'ChangChang', 'Chang')
+conn = mdb.connect('localhost', 'Change', '-5-Change', 'Change')
 cur = conn.cursor()
 
-APP_KEY = 'Chang'
-APP_SECRET = 'Chang'
-OAUTH_TOKEN = 'Chang'
-OAUTH_TOKEN_SECRET = 'Chang'
+APP_KEY = 'Change'
+APP_SECRET = 'Change'
+OAUTH_TOKEN = 'ChangeChange'
+OAUTH_TOKEN_SECRET = 'Change'
 
 #Authenticate our app with twitter
 twitter = Twython(APP_KEY, APP_SECRET, OAUTH_TOKEN, OAUTH_TOKEN_SECRET)
@@ -41,16 +41,30 @@ def followURL(url):
     return f.url
 
 #Straightforward. Ask our volunteers to do something about an event that was validated.
-def tweetUponAngels(tweetPerson,URLOut):
-    shortURLOut = bitlyShortener.shorten(longUrl=URLOut)
-    for kindPerson in kindnessResponders['users']:
-        messageOfKindness = '@' + kindPerson['screen_name']\
-        + ' Something bad happened. Please respond with an act of kindness. Event validated by @' + tweetPerson + ' '  + shortURLOut['url']
-        try:
-            twitter.update_status(status=messageOfKindness[0:140])
-            print message
-        except:
-            print "probably a dupe"
+def tweetUponAngels(verifierScreenName, URLOut, tweetID):
+    shortURLOut="NULL"
+    kindnessResponders = twitter.get_list_members(slug='kindness-responders'
+        , owner_screen_name='weaware')
+    try:
+        shortURLOut = bitlyShortener.shorten(longUrl=URLOut)
+    except:
+        print "blitdang"
+    try:
+        for kindPerson in kindnessResponders['users']:
+            messageOfKindness = '@' + kindPerson['screen_name']\
+            + ' Something bad happened. Please respond with an act of kindness. Event validated by @' + verifierScreenName + ' '  + shortURLOut['url']
+            try:
+                theMessage = twitter.update_status(status=messageOfKindness)
+            except:
+                print "couldn't tweet the message"
+            messageToResponderID = theMessage['id']
+            try:
+                cur.execute("INSERT INTO Responders (kindnessResponderScreenName, respondedToTweetID, responseTweetID, timeAndDate) VALUES ('%s', %s, %s, '%s');"
+                % (kindPerson['screen_name'], messageToResponderID, tweetID, datetime.now().isoformat(' ') ))
+            except:
+                print "couldn't update Responders table"
+    except:
+            print "something broke in tweeting upon angels"
 
 #Announce that a person has verified an article. 
 def sendVerifiedTweet(tweetPerson,idOut):
@@ -59,7 +73,7 @@ def sendVerifiedTweet(tweetPerson,idOut):
     print messageOfVerification[0:139]
     try:
         print messageOfVerification
-        twitter.update_status(status=messageOfVerification[0:140])
+        twitter.update_status(status=messageOfVerification)
         twitter.create_favorite(id=idOut)
     except:
         print "dupe"
@@ -80,8 +94,6 @@ def getAlertedTweets():
 #and the people who carry out kind acts (kindnessResponders)
 peopleWhoCare = twitter.get_list_members(slug='iraq-car-bomb-admin-list'
         , owner_screen_name='weaware')
-kindnessResponders = twitter.get_list_members(slug='kindness-responders'
-        , owner_screen_name='weaware')
 
 #Get the tweets we've already asked for verification with
 alertedtweets = getAlertedTweets()
@@ -92,7 +104,7 @@ alertedtweets = getAlertedTweets()
 #Set the isPublished and isValid flags to 1(need more info about what these flags mean...)
 for p in peopleWhoCare['users']:
     timeline = twitter.get_user_timeline(screen_name=p['screen_name'],
-            count=200, exclude_replies=False)
+            count=20, exclude_replies=False)
     retweets = list()
     for t in timeline:
         try:
@@ -104,10 +116,10 @@ for p in peopleWhoCare['users']:
         if t['in_reply_to_screen_name']:
             try:
                 lenOfReplyToName=len(t['in_reply_to_screen_name'])+2 #for the @ sign and the space
-                print t['text'][lenOfReplyToName:lenOfReplyToName+5]
+                print t['text'][0:lenOfReplyToName+5]
                 if t['in_reply_to_status_id'] in alertedtweets and (
                     t['text'][lenOfReplyToName:lenOfReplyToName+5]=="false" or t['text'][lenOfReplyToName:lenOfReplyToName+1]=="F" or t['text'][lenOfReplyToName:lenOfReplyToName+1]=="N"): 
-                    #cur.execute("UPDATE Alerts SET isValid=2 WHERE Tweetid=(%s);" % (t['in_reply_to_status_id']) )
+                    cur.execute("UPDATE Alerts SET isValid=2 WHERE Tweetid=(%s);" % (t['in_reply_to_status_id']) )
                     print 'Found a Nullified Tweet'
                     print t['in_reply_to_status_id']
             except:
@@ -119,30 +131,43 @@ for p in peopleWhoCare['users']:
                 print 'Found a reply'
         except KeyError:
             print 'Not a retweet'
-    print retweets
     for r in retweets:
         try:
             if ( long(r['retweeted_status']['id']) in alertedtweets ):
                 try:
-                    cur.execute("INSERT INTO Verifications (OPScreenname, TweetText, Tweetid, VerifierScreenName, VerifyingTweetID) VALUES ('%s', '%s', %s, '%s', %s);"
+                    tweetUponAngels(r['user']['screen_name'],'https://twitter.com/%s/status/%s/' % (r['user']['screen_name'], r['retweeted_status']['id']), r['retweeted_status']['id'] )
+                except e:
+                    print "Tweet Broke"
+                    print e
+                try:
+                    try:
+                        cur.execute("INSERT INTO Verifications (OPScreenname, TweetText, Tweetid, VerifierScreenName, VerifyingTweetID) VALUES ('%s', '%s', %s, '%s', %s);"
                         % (r['retweeted_status']['user']['screen_name'], r['retweeted_status'
                             ]['text'], r['retweeted_status']['id'],
                             r['user']['screen_name'], r['id']))
-                    cur.execute("UPDATE Alerts SET isPublished=1 WHERE Tweetid=(%s);" % (r['retweeted_status']['id']) )
-                    cur.execute("UPDATE Alerts SET isValid=1 WHERE Tweetid=(%s);" % (r['retweeted_status']['id']) )
-                    cur.execute("SELECT percentDamaged FROM Response ORDER BY timeAndDate DESC LIMIT 1;")
-                    updatedDamageLevel = cur.fetchone()[0]-10
-                    curURL='https://twitter.com/%s/status/%s/' % (r['user']['screen_name'], r['retweeted_status']['id'])
-                    cur.execute("INSERT INTO Response (percentDamaged, damageURL, positiveAction, timeAndDate) VALUES (%s,'%s','%s','%s');" % 
+                    except:
+                        print "couldn't verify"
+                    try:
+                        cur.execute("UPDATE Alerts SET isPublished=1 WHERE Tweetid=(%s);" % (r['retweeted_status']['id']) )
+                        cur.execute("UPDATE Alerts SET isValid=1 WHERE Tweetid=(%s);" % (r['retweeted_status']['id']) )
+                    except:
+                        print "couldn't update alerts"
+                    try:
+                        cur.execute("SELECT percentDamaged FROM Response ORDER BY timeAndDate DESC LIMIT 1;")
+                        updatedDamageLevel = cur.fetchone()[0]-10
+                        curURL='https://twitter.com/%s/status/%s/' % (r['user']['screen_name'], r['retweeted_status']['id'])
+                        cur.execute("INSERT INTO Response (percentDamaged, damageURL, positiveAction, timeAndDate) VALUES (%s,'%s','%s','%s');" % 
                         (updatedDamageLevel, curURL, 'NULL', datetime.now().isoformat(' ')  ) )
-                    sendVerifiedTweet(r['user']['screen_name'],r['retweeted_status']['id']) 
-                    for kindPerson in kindnessResponders['users']:
-                        tweetUponAngels(r['user']['screen_name'],'https://twitter.com/%s/status/%s/' % (r['user']['screen_name'], r['retweeted_status']['id']))
-                        print r['user']['screen_name']
-                        print 'https://twitter.com/%s/status/%s/' % (r['user']['screen_name'], r['retweeted_status']['id'])
+                    except:
+                        print "couldn't update damage"
                     conn.commit()
+                    try:
+                        sendVerifiedTweet(r['user']['screen_name'],r['retweeted_status']['id']) 
+                    except:
+                        print "second tweet no work"
                 except mdb.Error, e:
-                    print 'Something went wrong. Probably a primary key violation, which is Okey dokey!'
+                        print 'Something went wrong. Probably a primary key violation, which is Okey dokey!'
+                        print e
         except:
             print "there is no retweeted status yo"
 
