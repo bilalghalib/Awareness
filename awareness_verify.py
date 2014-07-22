@@ -18,12 +18,12 @@ bitlyShortener = bitlyapi.BitLy(API_USER, API_KEY)
 
 
 #Connect to our database.
-conn = mdb.connect('localhost', 'Change', '-5-Change', 'Change')
+conn = mdb.connect('localhost', 'Change', 'Change', 'Change')
 cur = conn.cursor()
 
 APP_KEY = 'Change'
 APP_SECRET = 'Change'
-OAUTH_TOKEN = 'ChangeChange'
+OAUTH_TOKEN = 'Change'
 OAUTH_TOKEN_SECRET = 'Change'
 
 #Authenticate our app with twitter
@@ -195,4 +195,5 @@ for ValidatedEvents in cur:
     except mdb.Error, e:
         print '2Something went wrong. Probably a primary key violation, which is Okey dokey!'
     conn.commit()
+
 

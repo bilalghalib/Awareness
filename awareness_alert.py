@@ -11,13 +11,13 @@ import MySQLdb as mdb
 import urllib2
 
 #Connect to our database.
-conn = mdb.connect('chang', 'chang', 'chang', 'chang')
+conn = mdb.connect('localhost', 'Change', 'Change', 'Change')
 cur = conn.cursor()
 
-APP_KEY = 'chang'
-APP_SECRET = 'chang'
-OAUTH_TOKEN = 'chang'
-OAUTH_TOKEN_SECRET = 'chang'
+APP_KEY = 'Change'
+APP_SECRET = 'Change'
+OAUTH_TOKEN = 'Change'
+OAUTH_TOKEN_SECRET = 'Change'
 
 #Authenticate our app with twitter
 twitter = Twython(APP_KEY, APP_SECRET, OAUTH_TOKEN, OAUTH_TOKEN_SECRET)
@@ -36,7 +36,7 @@ def followURL(url):
 def getUnverified():
     alertids = list()
     numentries = \
-        cur.execute('SELECT isValid, Tweetid FROM Alerts WHERE isValid=2;' #isValid = 2 is for someone who's confirmed it NOT valid
+        cur.execute('SELECT isValid, Tweetid FROM Alerts WHERE isValid=2;'
                     )
     for row in cur:
         print row[1]
@@ -56,8 +56,8 @@ halfADayAgo = datetime.datetime.now() - timedelta(hours=12)
 halfADayAgo = halfADayAgo.strftime('%Y-%m-%d')
 
 #Search Twitter for "iraq car bomb"
-results = twitter.search(q='iraq car bomb', since=halfADayAgo,
-                         count=200)
+results = twitter.search(q='iraq', since=halfADayAgo,
+                         count=20)
 
 #Get the set of users who are volunteering as verifiers
 peopleWhoCare = twitter.get_list_members(slug='iraq-car-bomb-admin-list'
@@ -94,13 +94,14 @@ if len(acceptable) != 0:
         print rand['entities']['urls'][0]['expanded_url']
         try:
             if rand['id'] not in unverifiedList:
-                print "Has not been classified as not real yet"
+                #print rand
+                #print "Has not been classified as not real yet"
                 try:
                     print "('%s', '%s', %s, '%s','%s',%s);" % (rand['user']['screen_name'].encode('utf-8'), rand['text'].encode('utf-8'), rand['id'], 
                         followURL(rand['entities']['urls'][0]['expanded_url']).encode('latin-1', 'replace'),p['screen_name'].encode('utf-8'),'NULL') 
                     cur.execute("INSERT INTO Alerts (OPScreenName, TweetText, Tweetid, URL, ValidatorScreenName, isValid) VALUES ('%s', '%s', %s, '%s','%s','%s');"
                     % (rand['user']['screen_name'].encode('utf-8'), rand['text'].encode('utf-8'),
-                    rand['id'], followURL(rand['entities']['urls'
+                    rand['retweeted_status']['id'], followURL(rand['entities']['urls'
                     ][0]['expanded_url']).encode('utf-8'),p['screen_name'].encode('utf-8'),'NULL'))
                     conn.commit()
                 except mdb.Error, e:
@@ -118,4 +119,4 @@ if len(acceptable) != 0:
                 print "Classed as not real"
                 print rand['id']
         except:
-            print "something is up with unverifiedList or rand['id]"
+            print "something is up with unverifiedList or rand['id']"
