@@ -56,8 +56,8 @@ halfADayAgo = datetime.datetime.now() - timedelta(hours=12)
 halfADayAgo = halfADayAgo.strftime('%Y-%m-%d')
 
 #Search Twitter for "iraq car bomb"
-results = twitter.search(q='iraq', since=halfADayAgo,
-                         count=20)
+results = twitter.search(q='iraq car bomb', since=halfADayAgo,
+                         count=200)
 
 #Get the set of users who are volunteering as verifiers
 peopleWhoCare = twitter.get_list_members(slug='iraq-car-bomb-admin-list'
