@@ -5,6 +5,7 @@ from twython import Twython
 import random
 import pickle
 import datetime
+from datetime import timedelta
 from datetime import datetime
 from time import sleep
 import MySQLdb as mdb
@@ -12,13 +13,13 @@ import sys
 import urllib2
 
 #Connect to our database.
-conn = mdb.connect('change', 'change', 'change', 'change')
+conn = mdb.connect('localhost', 'awareness', '-5-fqRG7h1C1w93v4cXZLreFx', 'awareness')
 cur = conn.cursor()
 
-APP_KEY = 'change'
-APP_SECRET = 'change'
-OAUTH_TOKEN = 'change'
-OAUTH_TOKEN_SECRET = 'change'
+APP_KEY = 'JBWxj33Qv1fXPgzossjV3g'
+APP_SECRET = '0uSXJYofTiiyz2nNkgP2ko1c1niFSBABYO3BpQgzg'
+OAUTH_TOKEN = '2362763762-3n6lBjHvvoE5tcMKRJS0iMyF8kWYlhLhiH5j6U5'
+OAUTH_TOKEN_SECRET = 'IrVhcN6edKbMy06ItGoRxIlxLh1CFbhO8UyBx5l3QIELg'
 #Authenticate our app with twitter
 twitter = Twython(APP_KEY, APP_SECRET, OAUTH_TOKEN, OAUTH_TOKEN_SECRET)
 
@@ -49,7 +50,6 @@ for p in kindnessResponders['users']:
     retweets = list()
     for t in timeline:
         if  (t['in_reply_to_status_id'] in potentialResponses):
-            print "username :" + str(t['user']['screen_name'])
             print "the original tweet:" + str(t['in_reply_to_status_id'])
             print "the tweet that is the response" + str(t['id'])
             print "the event:" + str(potentialResponses[t['in_reply_to_status_id']])
@@ -57,14 +57,12 @@ for p in kindnessResponders['users']:
             positiveResponseTime = twitter.show_status(id=t['id'])['created_at']
             cur.execute("SELECT percentDamaged FROM Response ORDER BY timeAndDate DESC LIMIT 1;")
             updatedDamageLevel = cur.fetchone()[0]+10
-            print updatedDamageLevel
             try:
                 print positiveResponseTime
-                cur.execute("INSERT INTO Response (percentDamaged, damageURL, positiveAction, positiveScreenName, timeAndDate, timePositive, badEventID) VALUES (%s,'%s','%s','%s','%s', '%s', %s);" % 
-                    (updatedDamageLevel, 'NULL', positiveResponseText.encode('utf-8'), t['user']['screen_name'], datetime.now().isoformat(' '), positiveResponseTime, potentialResponses[t['in_reply_to_status_id']][0]) )
+                cur.execute("INSERT INTO Response (percentDamaged, damageURL, positiveAction, timeAndDate, timePositive) VALUES (%s,'%s','%s','%s', '%s');" % 
+                    (updatedDamageLevel, 'NULL', positiveResponseText.encode('utf-8'), datetime.now().isoformat(' '), positiveResponseTime) )
             except Exception, e:
                 print e
             conn.commit()
 
 sys.exit()
-
