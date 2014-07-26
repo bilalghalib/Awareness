@@ -1,33 +1,22 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
+#july 25 2014 refactoring code
+
 from twython import Twython
 import random
 import urllib2
 import httplib
 import MySQLdb as mdb
 from datetime import datetime
+import loginInfo
 
 import bitlyapi
 
 #connect to urlshortener
-
-API_USER = "Change"
-API_KEY = "Change"
+API_USER = "d"
+API_KEY = "d"
 
 bitlyShortener = bitlyapi.BitLy(API_USER, API_KEY)
-
-
-#Connect to our database.
-conn = mdb.connect('localhost', 'Change', 'Change', 'Change')
-cur = conn.cursor()
-
-APP_KEY = 'Change'
-APP_SECRET = 'Change'
-OAUTH_TOKEN = 'Change'
-OAUTH_TOKEN_SECRET = 'Change'
-
-#Authenticate our app with twitter
-twitter = Twython(APP_KEY, APP_SECRET, OAUTH_TOKEN, OAUTH_TOKEN_SECRET)
 
 #This will follow a shortened URL to get the final destination.
 #This is useful because it allows us to quickly determine if we've been to an article before.
@@ -139,14 +128,24 @@ for p in peopleWhoCare['users']:
                 except e:
                     print "Tweet Broke"
                     print e
+                theText=r['retweeted_status']['text'].replace("'","`")
                 try:
                     try:
                         cur.execute("INSERT INTO Verifications (OPScreenname, TweetText, Tweetid, VerifierScreenName, VerifyingTweetID) VALUES ('%s', '%s', %s, '%s', %s);"
-                        % (r['retweeted_status']['user']['screen_name'], r['retweeted_status'
-                            ]['text'], r['retweeted_status']['id'],
+                        % (r['retweeted_status']['user']['screen_name'], theText, r['retweeted_status']['id'],
                             r['user']['screen_name'], r['id']))
                     except:
                         print "couldn't verify"
+                    try:
+                        f = open('../crushornot/index.html','r')
+                        myInt = int(f.read())
+                        f.close()
+                        f = open('../crushornot/index.html','w')
+                        myint = myInt - 10
+                        f.write(str(myint))
+                        f.close()
+                    except Exception as e:
+                        print "can't update crushing page"
                     try:
                         cur.execute("UPDATE Alerts SET isPublished=1 WHERE Tweetid=(%s);" % (r['retweeted_status']['id']) )
                         cur.execute("UPDATE Alerts SET isValid=1 WHERE Tweetid=(%s);" % (r['retweeted_status']['id']) )
@@ -158,8 +157,9 @@ for p in peopleWhoCare['users']:
                         curURL='https://twitter.com/%s/status/%s/' % (r['user']['screen_name'], r['retweeted_status']['id'])
                         cur.execute("INSERT INTO Response (percentDamaged, damageURL, positiveAction, timeAndDate) VALUES (%s,'%s','%s','%s');" % 
                         (updatedDamageLevel, curURL, 'NULL', datetime.now().isoformat(' ')  ) )
-                    except:
+                    except Exception as e:
                         print "couldn't update damage"
+                        print e
                     conn.commit()
                     try:
                         sendVerifiedTweet(r['user']['screen_name'],r['retweeted_status']['id']) 
@@ -195,5 +195,3 @@ for ValidatedEvents in cur:
     except mdb.Error, e:
         print '2Something went wrong. Probably a primary key violation, which is Okey dokey!'
     conn.commit()
-
-

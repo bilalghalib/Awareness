@@ -1,5 +1,6 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
+#july 25 2014 refactoring code
 
 from twython import Twython
 import random
@@ -9,18 +10,7 @@ from datetime import timedelta
 from time import sleep
 import MySQLdb as mdb
 import urllib2
-
-#Connect to our database.
-conn = mdb.connect('localhost', 'Change', 'Change', 'Change')
-cur = conn.cursor()
-
-APP_KEY = 'Change'
-APP_SECRET = 'Change'
-OAUTH_TOKEN = 'Change'
-OAUTH_TOKEN_SECRET = 'Change'
-
-#Authenticate our app with twitter
-twitter = Twython(APP_KEY, APP_SECRET, OAUTH_TOKEN, OAUTH_TOKEN_SECRET)
+import loginInfo
 
 #Follow a shortened URL.
 def followURL(url):
