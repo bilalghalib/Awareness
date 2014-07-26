@@ -1,3 +1,5 @@
+#!/usr/bin/python
+
 import pyfirmata
 from pyfirmata import Arduino, util
 import time
@@ -12,10 +14,21 @@ arduinoNano= {
     }
 
 MAC_PORT = '/dev/tty.usbserial-A92LPJB3'
-HP_PORT = '/dev/ttyUSB1'
+HP_PORT1 = '/dev/ttyUSB1'
+HP_PORT0 = '/dev/ttyUSB0'
 # urllib.urlopen("http://www.musi-cal.com/cgi-bin/query?%s"
-Current_Serial_PORT = MAC_PORT
-board = pyfirmata.Arduino(Current_Serial_PORT)
+#Current_Serial_PORT = HP_PORT
+try:
+    board = pyfirmata.Arduino(HP_PORT1)
+    print "port 1"
+except Exception, e:
+    print "not 1"
+try:
+    board = pyfirmata.Arduino(HP_PORT0)
+    print "port 0"
+except Exception, e:
+    print "not 0"
+
 board.setup_layout(arduinoNano)
 
 board.servo_config(9, 1000, 2000, 0)
@@ -32,13 +45,13 @@ squishedTrigger = board.get_pin('a:6:i')
 allTheWayUpTrigger = board.get_pin('a:7:i')
 servoPin.write(1500)
 
-def returnAtBottom(squishedTrigger):
+def returnAtBottom():
     if(squishedTrigger.read() < .3):
         return True
     else:
         return False
 
-def returnAtTop(allTheWayUpTrigger):
+def returnAtTop():
     if(allTheWayUpTrigger.read() < .3):
         return True
     else:
