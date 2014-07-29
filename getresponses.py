@@ -1,3 +1,4 @@
+
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
@@ -33,7 +34,7 @@ def getResponses():
     while count < numentries:
         responseTweetID, respondedToTweetID = cur.fetchone()
         if respondedToTweetID in alertids:
-            alertids[respondedToTweetID].append(responseTweetID)                
+            alertids[respondedToTweetID].append(responseTweetID)
         else:
             alertids[respondedToTweetID] = [responseTweetID]
         count += 1
@@ -47,7 +48,6 @@ kindnessResponders = twitter.get_list_members(slug='kindness-responders'
 
 for p in kindnessResponders['users']:
     timeline = twitter.get_user_timeline(screen_name=p['screen_name'],count=200, exclude_replies=False)
-    retweets = list()
     for t in timeline:
         if  (t['in_reply_to_status_id'] in potentialResponses):
             print "the original tweet:" + str(t['in_reply_to_status_id'])
@@ -59,10 +59,9 @@ for p in kindnessResponders['users']:
             updatedDamageLevel = cur.fetchone()[0]+10
             try:
                 print positiveResponseTime
-                cur.execute("INSERT INTO Response (percentDamaged, damageURL, positiveAction, timeAndDate, timePositive) VALUES (%s,'%s','%s','%s', '%s');" % 
+                cur.execute("INSERT INTO Response (percentDamaged, damageURL, positiveAction, timeAndDate, timePositive) VALUES (%s,'%s','%s','%s', '%s');" %
                     (updatedDamageLevel, 'NULL', positiveResponseText.encode('utf-8'), datetime.now().isoformat(' '), positiveResponseTime) )
             except Exception, e:
                 print e
             conn.commit()
 
-sys.exit()
