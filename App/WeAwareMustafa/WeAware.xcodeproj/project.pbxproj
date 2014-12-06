@@ -1,0 +1,526 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		459CD09A1A160EF000C12E39 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 459CD0991A160EF000C12E39 /* main.m */; };
+		459CD09D1A160EF000C12E39 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 459CD09C1A160EF000C12E39 /* AppDelegate.m */; };
+		459CD0A01A160EF000C12E39 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 459CD09F1A160EF000C12E39 /* ViewController.m */; };
+		459CD0A31A160EF000C12E39 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 459CD0A11A160EF000C12E39 /* Main.storyboard */; };
+		459CD0A51A160EF000C12E39 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 459CD0A41A160EF000C12E39 /* Images.xcassets */; };
+		459CD0A81A160EF000C12E39 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 459CD0A61A160EF000C12E39 /* LaunchScreen.xib */; };
+		459CD0B41A160EF000C12E39 /* WeAwareTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 459CD0B31A160EF000C12E39 /* WeAwareTests.m */; };
+		459CD0C11A16112D00C12E39 /* Parse.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 459CD0C01A16112D00C12E39 /* Parse.framework */; };
+		459CD0C31A16113F00C12E39 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 459CD0C21A16113F00C12E39 /* AudioToolbox.framework */; };
+		459CD0C51A1611AC00C12E39 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 459CD0C41A1611AC00C12E39 /* CFNetwork.framework */; };
+		459CD0C71A1611B600C12E39 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 459CD0C61A1611B600C12E39 /* CoreGraphics.framework */; };
+		459CD0C91A1611C600C12E39 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 459CD0C81A1611C600C12E39 /* CoreLocation.framework */; };
+		459CD0CB1A1611CB00C12E39 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 459CD0CA1A1611CB00C12E39 /* libz.dylib */; };
+		459CD0CD1A1611D600C12E39 /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 459CD0CC1A1611D600C12E39 /* MobileCoreServices.framework */; };
+		459CD0CF1A1611DC00C12E39 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 459CD0CE1A1611DC00C12E39 /* QuartzCore.framework */; };
+		459CD0D11A1611E400C12E39 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 459CD0D01A1611E400C12E39 /* Security.framework */; };
+		459CD0D31A1611EC00C12E39 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 459CD0D21A1611EC00C12E39 /* StoreKit.framework */; };
+		459CD0D51A1611F500C12E39 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 459CD0D41A1611F400C12E39 /* SystemConfiguration.framework */; };
+		459CD0D81A1612F500C12E39 /* Social.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 459CD0D71A1612F500C12E39 /* Social.framework */; };
+		459CD0DA1A1612FE00C12E39 /* Accounts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 459CD0D91A1612FE00C12E39 /* Accounts.framework */; };
+		459CD0DC1A16130600C12E39 /* AdSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 459CD0DB1A16130600C12E39 /* AdSupport.framework */; };
+		459CD0DE1A16131C00C12E39 /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 459CD0DD1A16131C00C12E39 /* libsqlite3.dylib */; };
+		459CD0E01A16136400C12E39 /* Bolts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 459CD0DF1A16136400C12E39 /* Bolts.framework */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		459CD0AE1A160EF000C12E39 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 459CD08C1A160EF000C12E39 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 459CD0931A160EF000C12E39;
+			remoteInfo = WeAware;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		459CD0941A160EF000C12E39 /* WeAware.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WeAware.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		459CD0981A160EF000C12E39 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		459CD0991A160EF000C12E39 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		459CD09B1A160EF000C12E39 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		459CD09C1A160EF000C12E39 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		459CD09E1A160EF000C12E39 /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
+		459CD09F1A160EF000C12E39 /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
+		459CD0A21A160EF000C12E39 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		459CD0A41A160EF000C12E39 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
+		459CD0A71A160EF000C12E39 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
+		459CD0AD1A160EF000C12E39 /* WeAwareTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = WeAwareTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		459CD0B21A160EF000C12E39 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		459CD0B31A160EF000C12E39 /* WeAwareTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = WeAwareTests.m; sourceTree = "<group>"; };
+		459CD0C01A16112D00C12E39 /* Parse.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Parse.framework; path = frameworks/Parse.framework; sourceTree = SOURCE_ROOT; };
+		459CD0C21A16113F00C12E39 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
+		459CD0C41A1611AC00C12E39 /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
+		459CD0C61A1611B600C12E39 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		459CD0C81A1611C600C12E39 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
+		459CD0CA1A1611CB00C12E39 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
+		459CD0CC1A1611D600C12E39 /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
+		459CD0CE1A1611DC00C12E39 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		459CD0D01A1611E400C12E39 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
+		459CD0D21A1611EC00C12E39 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
+		459CD0D41A1611F400C12E39 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
+		459CD0D71A1612F500C12E39 /* Social.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Social.framework; path = System/Library/Frameworks/Social.framework; sourceTree = SDKROOT; };
+		459CD0D91A1612FE00C12E39 /* Accounts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accounts.framework; path = System/Library/Frameworks/Accounts.framework; sourceTree = SDKROOT; };
+		459CD0DB1A16130600C12E39 /* AdSupport.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AdSupport.framework; path = System/Library/Frameworks/AdSupport.framework; sourceTree = SDKROOT; };
+		459CD0DD1A16131C00C12E39 /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = usr/lib/libsqlite3.dylib; sourceTree = SDKROOT; };
+		459CD0DF1A16136400C12E39 /* Bolts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Bolts.framework; path = frameworks/Bolts.framework; sourceTree = SOURCE_ROOT; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		459CD0911A160EF000C12E39 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				459CD0DE1A16131C00C12E39 /* libsqlite3.dylib in Frameworks */,
+				459CD0DC1A16130600C12E39 /* AdSupport.framework in Frameworks */,
+				459CD0DA1A1612FE00C12E39 /* Accounts.framework in Frameworks */,
+				459CD0D81A1612F500C12E39 /* Social.framework in Frameworks */,
+				459CD0D51A1611F500C12E39 /* SystemConfiguration.framework in Frameworks */,
+				459CD0D31A1611EC00C12E39 /* StoreKit.framework in Frameworks */,
+				459CD0D11A1611E400C12E39 /* Security.framework in Frameworks */,
+				459CD0CF1A1611DC00C12E39 /* QuartzCore.framework in Frameworks */,
+				459CD0CD1A1611D600C12E39 /* MobileCoreServices.framework in Frameworks */,
+				459CD0CB1A1611CB00C12E39 /* libz.dylib in Frameworks */,
+				459CD0C91A1611C600C12E39 /* CoreLocation.framework in Frameworks */,
+				459CD0C71A1611B600C12E39 /* CoreGraphics.framework in Frameworks */,
+				459CD0C51A1611AC00C12E39 /* CFNetwork.framework in Frameworks */,
+				459CD0C31A16113F00C12E39 /* AudioToolbox.framework in Frameworks */,
+				459CD0C11A16112D00C12E39 /* Parse.framework in Frameworks */,
+				459CD0E01A16136400C12E39 /* Bolts.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		459CD0AA1A160EF000C12E39 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		459CD08B1A160EF000C12E39 = {
+			isa = PBXGroup;
+			children = (
+				459CD0DD1A16131C00C12E39 /* libsqlite3.dylib */,
+				459CD0DB1A16130600C12E39 /* AdSupport.framework */,
+				459CD0D91A1612FE00C12E39 /* Accounts.framework */,
+				459CD0D71A1612F500C12E39 /* Social.framework */,
+				459CD0961A160EF000C12E39 /* WeAware */,
+				459CD0B01A160EF000C12E39 /* WeAwareTests */,
+				459CD0951A160EF000C12E39 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		459CD0951A160EF000C12E39 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				459CD0941A160EF000C12E39 /* WeAware.app */,
+				459CD0AD1A160EF000C12E39 /* WeAwareTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		459CD0961A160EF000C12E39 /* WeAware */ = {
+			isa = PBXGroup;
+			children = (
+				459CD09B1A160EF000C12E39 /* AppDelegate.h */,
+				459CD09C1A160EF000C12E39 /* AppDelegate.m */,
+				459CD09E1A160EF000C12E39 /* ViewController.h */,
+				459CD09F1A160EF000C12E39 /* ViewController.m */,
+				459CD0A11A160EF000C12E39 /* Main.storyboard */,
+				459CD0A41A160EF000C12E39 /* Images.xcassets */,
+				459CD0A61A160EF000C12E39 /* LaunchScreen.xib */,
+				459CD0971A160EF000C12E39 /* Supporting Files */,
+			);
+			path = WeAware;
+			sourceTree = "<group>";
+		};
+		459CD0971A160EF000C12E39 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				459CD0BF1A16111600C12E39 /* Frameworks */,
+				459CD0981A160EF000C12E39 /* Info.plist */,
+				459CD0991A160EF000C12E39 /* main.m */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		459CD0B01A160EF000C12E39 /* WeAwareTests */ = {
+			isa = PBXGroup;
+			children = (
+				459CD0B31A160EF000C12E39 /* WeAwareTests.m */,
+				459CD0B11A160EF000C12E39 /* Supporting Files */,
+			);
+			path = WeAwareTests;
+			sourceTree = "<group>";
+		};
+		459CD0B11A160EF000C12E39 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				459CD0B21A160EF000C12E39 /* Info.plist */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		459CD0BF1A16111600C12E39 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				459CD0DF1A16136400C12E39 /* Bolts.framework */,
+				459CD0D41A1611F400C12E39 /* SystemConfiguration.framework */,
+				459CD0D21A1611EC00C12E39 /* StoreKit.framework */,
+				459CD0D01A1611E400C12E39 /* Security.framework */,
+				459CD0CE1A1611DC00C12E39 /* QuartzCore.framework */,
+				459CD0CC1A1611D600C12E39 /* MobileCoreServices.framework */,
+				459CD0CA1A1611CB00C12E39 /* libz.dylib */,
+				459CD0C81A1611C600C12E39 /* CoreLocation.framework */,
+				459CD0C61A1611B600C12E39 /* CoreGraphics.framework */,
+				459CD0C41A1611AC00C12E39 /* CFNetwork.framework */,
+				459CD0C21A16113F00C12E39 /* AudioToolbox.framework */,
+				459CD0C01A16112D00C12E39 /* Parse.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		459CD0931A160EF000C12E39 /* WeAware */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 459CD0B71A160EF000C12E39 /* Build configuration list for PBXNativeTarget "WeAware" */;
+			buildPhases = (
+				459CD0901A160EF000C12E39 /* Sources */,
+				459CD0911A160EF000C12E39 /* Frameworks */,
+				459CD0921A160EF000C12E39 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = WeAware;
+			productName = WeAware;
+			productReference = 459CD0941A160EF000C12E39 /* WeAware.app */;
+			productType = "com.apple.product-type.application";
+		};
+		459CD0AC1A160EF000C12E39 /* WeAwareTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 459CD0BA1A160EF000C12E39 /* Build configuration list for PBXNativeTarget "WeAwareTests" */;
+			buildPhases = (
+				459CD0A91A160EF000C12E39 /* Sources */,
+				459CD0AA1A160EF000C12E39 /* Frameworks */,
+				459CD0AB1A160EF000C12E39 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				459CD0AF1A160EF000C12E39 /* PBXTargetDependency */,
+			);
+			name = WeAwareTests;
+			productName = WeAwareTests;
+			productReference = 459CD0AD1A160EF000C12E39 /* WeAwareTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		459CD08C1A160EF000C12E39 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0610;
+				ORGANIZATIONNAME = WeAware;
+				TargetAttributes = {
+					459CD0931A160EF000C12E39 = {
+						CreatedOnToolsVersion = 6.1;
+						DevelopmentTeam = 4WQ99BMCA8;
+						SystemCapabilities = {
+							com.apple.BackgroundModes = {
+								enabled = 1;
+							};
+						};
+					};
+					459CD0AC1A160EF000C12E39 = {
+						CreatedOnToolsVersion = 6.1;
+						DevelopmentTeam = 9T34G446B6;
+						TestTargetID = 459CD0931A160EF000C12E39;
+					};
+				};
+			};
+			buildConfigurationList = 459CD08F1A160EF000C12E39 /* Build configuration list for PBXProject "WeAware" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 459CD08B1A160EF000C12E39;
+			productRefGroup = 459CD0951A160EF000C12E39 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				459CD0931A160EF000C12E39 /* WeAware */,
+				459CD0AC1A160EF000C12E39 /* WeAwareTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		459CD0921A160EF000C12E39 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				459CD0A31A160EF000C12E39 /* Main.storyboard in Resources */,
+				459CD0A81A160EF000C12E39 /* LaunchScreen.xib in Resources */,
+				459CD0A51A160EF000C12E39 /* Images.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		459CD0AB1A160EF000C12E39 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		459CD0901A160EF000C12E39 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				459CD0A01A160EF000C12E39 /* ViewController.m in Sources */,
+				459CD09D1A160EF000C12E39 /* AppDelegate.m in Sources */,
+				459CD09A1A160EF000C12E39 /* main.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		459CD0A91A160EF000C12E39 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				459CD0B41A160EF000C12E39 /* WeAwareTests.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		459CD0AF1A160EF000C12E39 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 459CD0931A160EF000C12E39 /* WeAware */;
+			targetProxy = 459CD0AE1A160EF000C12E39 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		459CD0A11A160EF000C12E39 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				459CD0A21A160EF000C12E39 /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		459CD0A61A160EF000C12E39 /* LaunchScreen.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				459CD0A71A160EF000C12E39 /* Base */,
+			);
+			name = LaunchScreen.xib;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		459CD0B51A160EF000C12E39 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos7.0;
+			};
+			name = Debug;
+		};
+		459CD0B61A160EF000C12E39 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = YES;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos7.0;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		459CD0B81A160EF000C12E39 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/frameworks",
+				);
+				INFOPLIST_FILE = WeAware/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
+				SDKROOT = iphoneos7.0;
+			};
+			name = Debug;
+		};
+		459CD0B91A160EF000C12E39 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/frameworks",
+				);
+				INFOPLIST_FILE = WeAware/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
+				SDKROOT = iphoneos7.0;
+			};
+			name = Release;
+		};
+		459CD0BB1A160EF000C12E39 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+				);
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = WeAwareTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/WeAware.app/WeAware";
+			};
+			name = Debug;
+		};
+		459CD0BC1A160EF000C12E39 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = WeAwareTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/WeAware.app/WeAware";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		459CD08F1A160EF000C12E39 /* Build configuration list for PBXProject "WeAware" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				459CD0B51A160EF000C12E39 /* Debug */,
+				459CD0B61A160EF000C12E39 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		459CD0B71A160EF000C12E39 /* Build configuration list for PBXNativeTarget "WeAware" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				459CD0B81A160EF000C12E39 /* Debug */,
+				459CD0B91A160EF000C12E39 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		459CD0BA1A160EF000C12E39 /* Build configuration list for PBXNativeTarget "WeAwareTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				459CD0BB1A160EF000C12E39 /* Debug */,
+				459CD0BC1A160EF000C12E39 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 459CD08C1A160EF000C12E39 /* Project object */;
+}
