@@ -487,6 +487,69 @@ export interface SensemakingEntry {
   updated_at: string;
 }
 
+export interface ImplicationLevelRecord {
+  id: string;
+  issue_id: string;
+  level: ImplicationLevel;
+  display_order: number;
+  implication_prompt: string;
+  implication_description: string | null;
+  implication_examples: string[] | null;
+  action_prompt: string;
+  action_description: string | null;
+  created_at: string;
+  updated_at: string;
+  created_by: string | null;
+}
+
+export interface LevelAction {
+  id: string;
+  implication_level_id: string;
+  title: string;
+  description: string;
+  difficulty: 'easy' | 'moderate' | 'challenging' | 'requires_commitment';
+  time_commitment: string | null;
+  resources: {
+    links?: Array<{ title: string; url: string }>;
+    templates?: Array<{ title: string; content: string }>;
+    guides?: Array<{ title: string; url: string }>;
+  } | null;
+  times_taken: number;
+  average_rating: number | null;
+  created_at: string;
+  updated_at: string;
+  created_by: string | null;
+}
+
+export interface UserLevelEngagement {
+  id: string;
+  user_id: string;
+  issue_id: string;
+  level: ImplicationLevel;
+  first_viewed_at: string;
+  last_engaged_at: string;
+  actions_taken_count: number;
+  my_implication_notes: string | null;
+  my_action_commitments: string[] | null;
+  shared_with_pack: boolean;
+  pack_id: string | null;
+}
+
+export interface ActionCompletion {
+  id: string;
+  user_id: string;
+  level_action_id: string;
+  completed_at: string;
+  reflection: string | null;
+  rating: number | null;
+  would_recommend: boolean | null;
+  completed_with_pack: boolean;
+  pack_id: string | null;
+  coordinated_with_user_ids: string[] | null;
+  proof_url: string | null;
+  proof_image_url: string | null;
+}
+
 // ============================================
 // VIEW TYPES
 // ============================================
@@ -588,6 +651,23 @@ export interface SensemakingWithDetails extends SensemakingEntry {
   author: Profile;
   pack: Pack;
   issue: Issue;
+}
+
+export interface ImplicationLevelWithActions extends ImplicationLevelRecord {
+  actions?: LevelAction[];
+  action_count?: number;
+  completion_count?: number;
+}
+
+export interface LevelActionWithCompletions extends LevelAction {
+  completions?: ActionCompletion[];
+  user_completion?: ActionCompletion; // Current user's completion if any
+}
+
+export interface ActionCompletionWithDetails extends ActionCompletion {
+  user: Profile;
+  action: LevelAction;
+  coordinated_with?: Profile[];
 }
 
 // ============================================
@@ -787,7 +867,11 @@ export type DatabaseTable =
   | 'pack_issue_focus'
   | 'memorial_entries'
   | 'interpretations'
-  | 'sensemaking_entries';
+  | 'sensemaking_entries'
+  | 'implication_levels'
+  | 'level_actions'
+  | 'user_level_engagement'
+  | 'action_completions';
 
 export type InsertType<T> = Omit<T, 'id' | 'created_at' | 'updated_at'>;
 export type UpdateType<T> = Partial<Omit<T, 'id' | 'created_at' | 'updated_at'>>;
@@ -903,6 +987,26 @@ export interface Database {
         Row: SensemakingEntry;
         Insert: InsertType<SensemakingEntry>;
         Update: UpdateType<SensemakingEntry>;
+      };
+      implication_levels: {
+        Row: ImplicationLevelRecord;
+        Insert: InsertType<ImplicationLevelRecord>;
+        Update: UpdateType<ImplicationLevelRecord>;
+      };
+      level_actions: {
+        Row: LevelAction;
+        Insert: InsertType<LevelAction>;
+        Update: UpdateType<LevelAction>;
+      };
+      user_level_engagement: {
+        Row: UserLevelEngagement;
+        Insert: InsertType<UserLevelEngagement>;
+        Update: UpdateType<UserLevelEngagement>;
+      };
+      action_completions: {
+        Row: ActionCompletion;
+        Insert: InsertType<ActionCompletion>;
+        Update: UpdateType<ActionCompletion>;
       };
     };
     Views: {
