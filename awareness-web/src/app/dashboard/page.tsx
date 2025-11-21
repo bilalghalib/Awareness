@@ -53,14 +53,22 @@ export default async function DashboardPage() {
               </p>
             </div>
 
-            <form action="/auth/signout" method="post">
-              <button
-                type="submit"
-                className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+            <div className="flex items-center space-x-4">
+              <a
+                href="/events"
+                className="px-4 py-2 bg-blue-600 text-white rounded-md text-sm font-medium hover:bg-blue-700 transition-colors"
               >
-                Sign out
-              </button>
-            </form>
+                View Events
+              </a>
+              <form action="/auth/signout" method="post">
+                <button
+                  type="submit"
+                  className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                >
+                  Sign out
+                </button>
+              </form>
+            </div>
           </div>
         </div>
       </header>
