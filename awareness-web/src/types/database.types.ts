@@ -54,6 +54,36 @@ export enum PresenceStatus {
   Responding = 'responding'
 }
 
+export enum IssueType {
+  Environmental = 'environmental',
+  Humanitarian = 'humanitarian',
+  Systemic = 'systemic',
+  Political = 'political',
+  Economic = 'economic'
+}
+
+export enum IssueStatus {
+  Active = 'active',
+  Monitoring = 'monitoring',
+  Resolved = 'resolved',
+  Escalating = 'escalating'
+}
+
+export enum ContentTier {
+  Awareness = 1, // Always show - dignity-preserving
+  Understanding = 2, // Context - opt-in
+  Evidence = 3 // Validators only - may include graphic
+}
+
+export enum ImplicationLevel {
+  Individual = 'individual',
+  Family = 'family',
+  Community = 'community',
+  Culture = 'culture',
+  Country = 'country',
+  Systemic = 'systemic'
+}
+
 // ============================================
 // JSONB TYPE INTERFACES
 // ============================================
@@ -131,6 +161,30 @@ export interface DeviceMetadata {
   [key: string]: any;
 }
 
+export interface ContentPreferences {
+  show_graphic_content: boolean;
+  auto_expand_context: boolean;
+  require_closing_ritual: boolean;
+  content_tier_preference: ContentTier;
+}
+
+export interface InterpretationEntry {
+  interpretation_text: string;
+  source_name?: string;
+  source_url?: string;
+  perspective_type?: string;
+}
+
+export interface MemorialData {
+  names?: Array<{
+    name: string;
+    age?: number;
+    remembered_for?: string;
+  }>;
+  total_count?: number;
+  memorial_message?: string;
+}
+
 // ============================================
 // DATABASE TABLE TYPES
 // ============================================
@@ -145,6 +199,7 @@ export interface Profile {
   timezone: string;
   notification_preferences: NotificationPreferences;
   response_capacity: ResponseCapacity;
+  content_preferences: ContentPreferences;
   created_at: string;
   updated_at: string;
 }
@@ -195,6 +250,17 @@ export interface Event {
   published_to_pack_ids: string[] | null;
   archived_at: string | null;
   archive_reason: string | null;
+
+  // Issues model (events become "moments" within issues)
+  issue_id: string | null;
+
+  // Content protection
+  content_tier: ContentTier;
+  has_graphic_content: boolean;
+  content_warnings: string[] | null;
+  show_memorial_view: boolean;
+  memorial_data: MemorialData | null;
+
   created_at: string;
   updated_at: string;
 }
@@ -343,6 +409,84 @@ export interface AuditLog {
   created_at: string;
 }
 
+export interface Issue {
+  id: string;
+  title: string;
+  slug: string;
+  description: string;
+  type: IssueType;
+  current_status: IssueStatus;
+  started_at: string | null;
+  resolved_at: string | null;
+  what_we_know: string | null;
+  what_we_dont_know: string | null;
+  what_it_means: InterpretationEntry[];
+  header_image_url: string | null;
+  location_data: any | null;
+  created_at: string;
+  updated_at: string;
+  created_by: string | null;
+}
+
+export interface IssueFollower {
+  id: string;
+  issue_id: string;
+  user_id: string;
+  notify_on_moments: boolean;
+  notify_on_campaigns: boolean;
+  first_followed_at: string;
+  last_engaged_at: string;
+}
+
+export interface PackIssueFocus {
+  id: string;
+  pack_id: string;
+  issue_id: string;
+  priority: 'primary' | 'secondary' | 'monitoring';
+  started_focusing_at: string;
+  last_action_at: string;
+}
+
+export interface MemorialEntry {
+  id: string;
+  event_id: string;
+  name: string | null;
+  age: number | null;
+  description: string | null;
+  remembered_for: string | null;
+  photo_url: string | null;
+  created_at: string;
+  created_by: string | null;
+}
+
+export interface Interpretation {
+  id: string;
+  issue_id: string | null;
+  event_id: string | null;
+  interpretation_text: string;
+  source_name: string | null;
+  source_url: string | null;
+  perspective_type: string | null;
+  verified: boolean;
+  verified_by: string | null;
+  verified_at: string | null;
+  created_at: string;
+  created_by: string | null;
+}
+
+export interface SensemakingEntry {
+  id: string;
+  issue_id: string;
+  pack_id: string;
+  user_id: string;
+  question: string;
+  interpretation: string;
+  reasoning: string | null;
+  actions_suggested: string[] | null;
+  created_at: string;
+  updated_at: string;
+}
+
 // ============================================
 // VIEW TYPES
 // ============================================
@@ -369,6 +513,18 @@ export interface UserEngagementView {
   responses_this_month: number;
   last_response_at: string | null;
   burnout_risk: 'low' | 'medium' | 'high';
+}
+
+export interface IssueWithStats extends Issue {
+  follower_count: number;
+  pack_count: number;
+  moment_count: number;
+}
+
+export interface MomentWithIssueContext extends Event {
+  issue_title: string | null;
+  issue_type: IssueType | null;
+  issue_status: IssueStatus | null;
 }
 
 // ============================================
@@ -408,6 +564,30 @@ export interface CollectiveActionWithDetails extends CollectiveAction {
 export interface ReflectionWithAuthor extends Reflection {
   author: Profile;
   replies?: ReflectionWithAuthor[];
+}
+
+export interface IssueWithDetails extends Issue {
+  followers?: IssueFollower[];
+  focused_packs?: PackIssueFocus[];
+  moments?: Event[];
+  interpretations?: Interpretation[];
+  follower_count?: number;
+  pack_count?: number;
+}
+
+export interface EventWithIssue extends Event {
+  issue?: Issue;
+}
+
+export interface InterpretationWithAuthor extends Interpretation {
+  author?: Profile;
+  verifier?: Profile;
+}
+
+export interface SensemakingWithDetails extends SensemakingEntry {
+  author: Profile;
+  pack: Pack;
+  issue: Issue;
 }
 
 // ============================================
@@ -479,6 +659,52 @@ export interface UpdatePresenceRequest {
   current_activity?: string;
 }
 
+export interface CreateIssueRequest {
+  title: string;
+  slug: string;
+  description: string;
+  type: IssueType;
+  started_at?: string;
+  what_we_know?: string;
+  what_we_dont_know?: string;
+  what_it_means?: InterpretationEntry[];
+  header_image_url?: string;
+  location_data?: any;
+}
+
+export interface FollowIssueRequest {
+  issue_id: string;
+  notify_on_moments?: boolean;
+  notify_on_campaigns?: boolean;
+}
+
+export interface CreateInterpretationRequest {
+  issue_id?: string;
+  event_id?: string;
+  interpretation_text: string;
+  source_name?: string;
+  source_url?: string;
+  perspective_type?: string;
+}
+
+export interface CreateSensemakingRequest {
+  issue_id: string;
+  pack_id: string;
+  question: string;
+  interpretation: string;
+  reasoning?: string;
+  actions_suggested?: string[];
+}
+
+export interface CreateMemorialEntryRequest {
+  event_id: string;
+  name?: string;
+  age?: number;
+  description?: string;
+  remembered_for?: string;
+  photo_url?: string;
+}
+
 // ============================================
 // FRONTEND STATE TYPES
 // ============================================
@@ -522,6 +748,20 @@ export interface CollectiveActionState {
   organizing: string[]; // action IDs
 }
 
+export interface IssueState {
+  issues: IssueWithStats[];
+  following: string[]; // issue IDs
+  pack_focus: PackIssueFocus[];
+  loading: boolean;
+  error: string | null;
+}
+
+export interface ContentProtectionState {
+  preferences: ContentPreferences;
+  show_warning: boolean;
+  warning_acknowledged: Record<string, boolean>; // event ID -> acknowledged
+}
+
 // ============================================
 // UTILITY TYPES
 // ============================================
@@ -541,7 +781,13 @@ export type DatabaseTable =
   | 'pack_presence'
   | 'notifications'
   | 'event_impact_tracking'
-  | 'audit_log';
+  | 'audit_log'
+  | 'issues'
+  | 'issue_followers'
+  | 'pack_issue_focus'
+  | 'memorial_entries'
+  | 'interpretations'
+  | 'sensemaking_entries';
 
 export type InsertType<T> = Omit<T, 'id' | 'created_at' | 'updated_at'>;
 export type UpdateType<T> = Partial<Omit<T, 'id' | 'created_at' | 'updated_at'>>;
@@ -628,6 +874,36 @@ export interface Database {
         Insert: InsertType<AuditLog>;
         Update: UpdateType<AuditLog>;
       };
+      issues: {
+        Row: Issue;
+        Insert: InsertType<Issue>;
+        Update: UpdateType<Issue>;
+      };
+      issue_followers: {
+        Row: IssueFollower;
+        Insert: InsertType<IssueFollower>;
+        Update: UpdateType<IssueFollower>;
+      };
+      pack_issue_focus: {
+        Row: PackIssueFocus;
+        Insert: InsertType<PackIssueFocus>;
+        Update: UpdateType<PackIssueFocus>;
+      };
+      memorial_entries: {
+        Row: MemorialEntry;
+        Insert: InsertType<MemorialEntry>;
+        Update: UpdateType<MemorialEntry>;
+      };
+      interpretations: {
+        Row: Interpretation;
+        Insert: InsertType<Interpretation>;
+        Update: UpdateType<Interpretation>;
+      };
+      sensemaking_entries: {
+        Row: SensemakingEntry;
+        Insert: InsertType<SensemakingEntry>;
+        Update: UpdateType<SensemakingEntry>;
+      };
     };
     Views: {
       active_events_view: {
@@ -638,6 +914,12 @@ export interface Database {
       };
       user_engagement_view: {
         Row: UserEngagementView;
+      };
+      issues_with_stats: {
+        Row: IssueWithStats;
+      };
+      moments_with_issue_context: {
+        Row: MomentWithIssueContext;
       };
     };
   };

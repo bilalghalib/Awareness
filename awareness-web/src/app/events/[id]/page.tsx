@@ -9,7 +9,11 @@ import { PackPresence } from '@/components/events/PackPresence'
 import { VerificationTrail } from '@/components/events/VerificationTrail'
 import { ReflectionSpace } from '@/components/events/ReflectionSpace'
 import { ImpactVisualization } from '@/components/events/ImpactVisualization'
+import { AutoContentWarning } from '@/components/content/ContentWarning'
+import { ClosingRitualTrigger } from '@/components/content/ClosingRitual'
 import { formatDistanceToNow } from 'date-fns'
+import { ContentTier } from '@/types/database.types'
+import Link from 'next/link'
 
 interface EventPageProps {
   params: {
@@ -37,13 +41,14 @@ export default async function EventPage({ params }: EventPageProps) {
 
   const userPackId = profile?.pack_memberships?.[0]?.pack_id
 
-  // Get event
+  // Get event with issue context
   const { data: event, error } = await supabase
     .from('events')
     .select(
       `
       *,
-      impact_tracking:event_impact_tracking (*)
+      impact_tracking:event_impact_tracking (*),
+      issue:issues (id, title, slug, type)
     `
     )
     .eq('id', params.id)
@@ -76,12 +81,28 @@ export default async function EventPage({ params }: EventPageProps) {
       {/* Header */}
       <header className="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          <a
-            href="/events"
-            className="text-sm text-blue-600 dark:text-blue-400 hover:underline mb-4 inline-block"
-          >
-            ← Back to Events
-          </a>
+          {/* Breadcrumb */}
+          <div className="text-sm mb-4 flex items-center gap-2">
+            {event.issue ? (
+              <>
+                <Link
+                  href={`/issues/${event.issue.slug}`}
+                  className="text-blue-600 dark:text-blue-400 hover:underline"
+                >
+                  {event.issue.title}
+                </Link>
+                <span className="text-gray-400">→</span>
+                <span className="text-gray-600 dark:text-gray-400">Moment</span>
+              </>
+            ) : (
+              <a
+                href="/events"
+                className="text-blue-600 dark:text-blue-400 hover:underline"
+              >
+                ← Back to Events
+              </a>
+            )}
+          </div>
 
           <div className="flex items-start justify-between">
             <div className="flex-1">
@@ -139,14 +160,20 @@ export default async function EventPage({ params }: EventPageProps) {
       </header>
 
       <main className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Description */}
-        {event.description && (
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6 mb-6">
-            <p className="text-gray-700 dark:text-gray-300 leading-relaxed">
-              {event.description}
-            </p>
-          </div>
-        )}
+        {/* Content Protection Wrapper */}
+        <AutoContentWarning
+          contentTier={(event.content_tier as ContentTier) || ContentTier.Awareness}
+          warnings={event.content_warnings || []}
+          eventId={event.id}
+        >
+          {/* Description */}
+          {event.description && (
+            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6 mb-6">
+              <p className="text-gray-700 dark:text-gray-300 leading-relaxed">
+                {event.description}
+              </p>
+            </div>
+          )}
 
         {/* Pack Presence - FOR MAYA: Shows collective holding */}
         {userPackId && (
@@ -241,6 +268,12 @@ export default async function EventPage({ params }: EventPageProps) {
             </div>
           </div>
         </div>
+
+        {/* Closing Ritual Trigger */}
+        <div className="mt-8 flex justify-center">
+          <ClosingRitualTrigger eventTitle={event.title} />
+        </div>
+      </AutoContentWarning>
       </main>
     </div>
   )

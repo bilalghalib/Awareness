@@ -21,6 +21,17 @@ export async function POST(request: Request) {
   try {
     const body = await request.json()
 
+    // Parse content warnings if provided as comma-separated string
+    let content_warnings = null
+    if (body.content_warnings && typeof body.content_warnings === 'string') {
+      content_warnings = body.content_warnings
+        .split(',')
+        .map((w: string) => w.trim())
+        .filter((w: string) => w.length > 0)
+    } else if (Array.isArray(body.content_warnings)) {
+      content_warnings = body.content_warnings
+    }
+
     const { data: event, error } = await supabase
       .from('events')
       .insert({
@@ -32,6 +43,12 @@ export async function POST(request: Request) {
         source_url: body.source_url,
         status: body.status || 'pending',
         estimated_casualties: body.estimated_casualties,
+        // New fields for Issues model and content protection
+        issue_id: body.issue_id || null,
+        content_tier: parseInt(body.content_tier) || 1,
+        has_graphic_content: body.has_graphic_content || false,
+        content_warnings: content_warnings,
+        show_memorial_view: body.show_memorial_view || false,
       })
       .select()
       .single()
