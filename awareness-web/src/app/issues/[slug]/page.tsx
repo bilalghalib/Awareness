@@ -6,6 +6,7 @@ import { IssueUnderstanding } from '@/components/issues/IssueUnderstanding'
 import { IssueMoments } from '@/components/issues/IssueMoments'
 import { PackSensemaking } from '@/components/issues/PackSensemaking'
 import { FollowIssueButton } from '@/components/issues/FollowIssueButton'
+import { LevelsOfImplication } from '@/components/issues/LevelsOfImplication'
 
 /**
  * Issue Page (Server Component)
@@ -119,6 +120,18 @@ export default async function IssuePage({ params }: { params: { slug: string } }
     .eq('verified', true)
     .order('created_at', { ascending: false })
 
+  // Get implication levels with actions
+  const { data: levels } = await supabase
+    .from('implication_levels')
+    .select(
+      `
+      *,
+      actions:level_actions(*)
+    `
+    )
+    .eq('issue_id', issue.id)
+    .order('display_order', { ascending: true })
+
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       {/* Issue Header */}
@@ -154,6 +167,15 @@ export default async function IssuePage({ params }: { params: { slug: string } }
             issueId={issue.id}
             packIds={packIds}
             packFocus={packFocus || []}
+          />
+        )}
+
+        {/* Levels of Implication */}
+        {levels && levels.length > 0 && (
+          <LevelsOfImplication
+            issueId={issue.id}
+            issueTitle={issue.title}
+            levels={levels}
           />
         )}
 
